@@ -55,6 +55,9 @@ public class wTeacher extends JFrame {
     JLabel labelNumberOfWordsLeft = new JLabel("");
     JLabel labelNumberOfWordsTotal = new JLabel("");
     JSpinner spinnerNumberOfBlocks, spinnerNumberOfCollocationsInABlock, spinnerFontSize;
+    JButton btnStartStop;
+    TimerLabel timerLabel;
+    TimerLabel differenceTimeLabel;
     boolean timerStarted;
     long timeOfLastMeasurement = 0;
 
@@ -99,6 +102,7 @@ public class wTeacher extends JFrame {
                 Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
                 prefs.putInt("fontSize", fontSize);
                 prefs.putInt("selectedRow", table.getSelectedRow());
+                prefs.putInt("countOfLearnedWords", countOfLearnedWords);
 
                 saveListDictionary();
             }
@@ -209,6 +213,9 @@ public class wTeacher extends JFrame {
         labelNumberOfDifficultWords.setText("difficult: "+Integer.toString( prefs.getInt("countOfDifficultWords", 0) ));
         labelNumberOfWordsLeft.setText("left: "+Integer.toString( prefs.getInt("countOfLeftWords", 0) ));
         labelNumberOfWordsTotal.setText("total: " + Integer.toString( prefs.getInt("countOfTotalWords", 0) ));
+
+        countOfLearnedWords = prefs.getInt("countOfLearnedWords", 0);
+        progressBar.setValue((int)((double)countOfLearnedWords / listDictionary.size() *  100));
 
         int j = 0;
         for (Collocation i: listDictionary){
@@ -363,6 +370,14 @@ public class wTeacher extends JFrame {
                         flagRuSwitch = false;
                         stringSwitch = false;
 
+                        int i = 0;
+                        for(Collocation colloc: listDictionary){
+                            if (colloc.learnedEn != colloc.learnedRu){
+                                i++;
+                            }
+                        }
+                        progressBar.setValue((int)(((double)i / numberOfCollocationsInABlock) *  100));
+
                     }
 
 
@@ -411,6 +426,12 @@ public class wTeacher extends JFrame {
                         }else{
                             resultText = original + "⚓";
                             listDictionary.get(indexOfTheSelectedRow).isDifficult = true;
+
+                            timerLabel.stopTimer();
+                            timerStarted = false;
+                            btnStartStop.setText("Start");
+                            differenceTimeLabel.setTimeColor(Color.RED);
+                            differenceTimeLabel.setStringTime(StringUtils.timeToString(timerLabel.getTime()));
                         }
                         if(answersAreHidden) {
                             dtm.setValueAt("",
@@ -636,7 +657,7 @@ public class wTeacher extends JFrame {
                     }
                 }
                 rowBeginIndexOfNativeWords = rowBeginIndexOfWellLearnedWords + numberOfBlocks * numberOfCollocationsInABlock;
-                progressBar.setValue(countOfLearnedWords / listDictionary.size() *  100);
+                progressBar.setValue((int)((double)countOfLearnedWords / listDictionary.size() *  100));
                 for (Collocation collocation : listOfWellLearnedWords) {
                     listDictionary.add(collocation);
                     dtm.addRow(new Object[0]);
@@ -764,7 +785,7 @@ public class wTeacher extends JFrame {
                     }
                 }
                 rowBeginIndexOfNativeWords = rowBeginIndexOfWellLearnedWords + numberOfBlocks * numberOfCollocationsInABlock;
-                progressBar.setValue(countOfLearnedWords / listDictionary.size() *  100);
+                progressBar.setValue((int)((double)countOfLearnedWords / listDictionary.size() *  100));
                 Collections.shuffle(listOfWellLearnedWords);
                 for (Collocation collocation : listOfWellLearnedWords) {
                     listDictionary.add(collocation);
@@ -1091,11 +1112,11 @@ public class wTeacher extends JFrame {
             }
         });
 
-        final TimerLabel timerLabel = new TimerLabel();
-        final TimerLabel differenceTimeLabel = new TimerLabel();
+        timerLabel = new TimerLabel();
+        differenceTimeLabel = new TimerLabel();
         differenceTimeLabel.setTimeColor(new Color(0, 128, 0));
 
-        final JButton btnStartStop = new JButton("Start");
+        btnStartStop = new JButton("Start");
         // Слушатель обработки события
         btnStartStop.addActionListener(new ActionListener() {
             @Override
@@ -1298,10 +1319,22 @@ public class wTeacher extends JFrame {
             private void setRowFilter(String text) {
 
                 TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(dtm);
-                sorter.setRowFilter(RowFilter.regexFilter(text));
+
+                RowFilter<TableModel, Object> firstFiler = null;
+                RowFilter<TableModel, Object> secondFilter = null;
+                List<RowFilter<TableModel,Object>> filters = new ArrayList<RowFilter<TableModel,Object>>();
+                RowFilter<TableModel, Object> compoundRowFilter = null;
+                try {
+                    firstFiler = RowFilter.regexFilter(text, 1);
+                    secondFilter = RowFilter.regexFilter(text, 3);
+                    filters.add(firstFiler);
+                    filters.add(secondFilter);
+                    compoundRowFilter = RowFilter.orFilter(filters);
+                } catch (java.util.regex.PatternSyntaxException e) {
+                    return;
+                }
+                sorter.setRowFilter(compoundRowFilter);
                 table.setRowSorter(sorter);
-
-
             }
 
             private void showMessageDialog(String strMessage) {
@@ -1623,6 +1656,7 @@ public class wTeacher extends JFrame {
                     }
 
                     defineIndexesOfWords();
+                    progressBar.setValue((int)((double)countOfLearnedWords / listDictionary.size() *  100));
 
                 }else{
                     out.writeUTF("loading");//инструкция для Android
