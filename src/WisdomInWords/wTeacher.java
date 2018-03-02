@@ -60,6 +60,7 @@ public class wTeacher extends JFrame {
     TimerLabel differenceTimeLabel;
     boolean timerStarted;
     long timeOfLastMeasurement = 0;
+    boolean swap = false;
 
     private boolean EnglishTextLayout = false;
     char[] ArrayEnglishCharacters = {'h', 'j', 'k', 'l', 'y', 'u', 'i', 'o',
@@ -472,7 +473,7 @@ public class wTeacher extends JFrame {
 
 
         // Кнопка Скрыть ответы
-        JButton btnHide = new JButton("Hide answers");
+        final JButton btnHide = new JButton("Hide answers");
         // Слушатель обработки события
         btnHide.addActionListener(new ActionListener() {
             @Override
@@ -502,8 +503,26 @@ public class wTeacher extends JFrame {
         btnLearn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                table.setRowSelectionInterval(0, 0);
-                scrollPane.getViewport().setViewPosition(new Point(0, 0));
+                if(swap) {
+
+                    table.setRowSelectionInterval(0, 0);
+                    scrollPane.getViewport().setViewPosition(new Point(0, 0));
+
+                }else{
+
+                    int i = 0;
+                    int j = 0;
+                    for(Collocation colloc: listDictionary){
+                        i++;
+                        if (colloc.learnedEn != colloc.learnedRu){
+                            j = i;
+                        }
+                    }
+
+                    table.getSelectionModel().setSelectionInterval(j, j);
+                    table.scrollRectToVisible(new Rectangle(table.getCellRect(j, 0, true)));
+
+                }
             }
         });
 
@@ -513,17 +532,24 @@ public class wTeacher extends JFrame {
         btnrRepeat.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int j = 0;
-                for (Collocation i : listDictionary) {
-                    if (i.learnedEn && i.learnedRu){
-                        break;
-                    }
-                    j++;
-                }
-                if(j == listDictionary.size()) j = 0;
 
-                table.getSelectionModel().setSelectionInterval(j, j);
-                table.scrollRectToVisible(new Rectangle(table.getCellRect(j, 0, true)));
+                if(swap){
+                    int j = listDictionary.size() - 1;
+                    table.getSelectionModel().setSelectionInterval(j, j);
+                    table.scrollRectToVisible(new Rectangle(table.getCellRect(j, 0, true)));
+                }else {
+                    int j = 0;
+                    for (Collocation i : listDictionary) {
+                        if (i.learnedEn && i.learnedRu) {
+                            break;
+                        }
+                        j++;
+                    }
+                    if (j == listDictionary.size()) j = 0;
+
+                    table.getSelectionModel().setSelectionInterval(j, j);
+                    table.scrollRectToVisible(new Rectangle(table.getCellRect(j, 0, true)));
+                }
             }
         });
 
@@ -1152,6 +1178,22 @@ public class wTeacher extends JFrame {
         table.scrollRectToVisible(new Rectangle(table.getCellRect(selectedRow, 0, true)));
 
 
+        final JButton btnSwap = new JButton("Swap");
+        // Слушатель обработки события
+        btnSwap.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                swap = !swap;
+                if(swap){
+                    btnSwap.setBackground(new Color(0xFA8072));
+                }else{
+                    btnSwap.setBackground(btnHide.getBackground());
+                }
+
+            }
+        });
+
         JButton btnTest = new JButton("Test");
         // Слушатель обработки события
         btnTest.addActionListener(new ActionListener() {
@@ -1193,6 +1235,7 @@ public class wTeacher extends JFrame {
         panel.add(btnStartStop);
         panel.add(timerLabel);
         panel.add(differenceTimeLabel);
+        panel.add(btnSwap);
 
         panel.add(scrollPane);
 
@@ -1626,8 +1669,10 @@ public class wTeacher extends JFrame {
                 ObjectOutputStream oos = new ObjectOutputStream(sout);
                 ObjectInputStream ois = new ObjectInputStream(sin);
 
+                boolean swapOnAndroid = in.readBoolean();
                 int countOfLearnedWordsOnAndroid = in.readInt();
-                if ( countOfLearnedWords < countOfLearnedWordsOnAndroid ){
+                if ( (countOfLearnedWords < countOfLearnedWordsOnAndroid)
+                        || (countOfLearnedWords == countOfLearnedWordsOnAndroid && swapOnAndroid) ){
                     out.writeUTF("unloading");//инструкция для Android
 
                     numberOfBlocks = in.readInt();

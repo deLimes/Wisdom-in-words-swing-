@@ -43,23 +43,21 @@
       <file leaf-file-name="wTeacher.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4701087" vertical-offset="3057" max-vertical-offset="31263">
-              <caret line="216" column="69" selection-start-line="216" selection-start-column="69" selection-end-line="216" selection-end-column="69" />
+            <state vertical-scroll-proportion="0.17337461" vertical-offset="7645" max-vertical-offset="31909">
+              <caret line="500" column="24" selection-start-line="500" selection-start-column="16" selection-end-line="500" selection-end-column="24" />
               <folding>
-                <element signature="e#3135#3576#0" expanded="true" />
-                <element signature="e#3575#3576#0" expanded="true" />
-                <element signature="e#8647#9063#0" expanded="true" />
-                <element signature="e#9062#9063#0" expanded="true" />
-                <element signature="e#19124#19694#0" expanded="true" />
-                <element signature="e#19693#19694#0" expanded="true" />
-                <element signature="e#20026#20540#0" expanded="true" />
-                <element signature="e#20539#20540#0" expanded="true" />
-                <element signature="e#36823#37696#0" expanded="true" />
-                <element signature="e#37695#37696#0" expanded="true" />
-                <element signature="e#39401#39773#0" expanded="true" />
-                <element signature="e#39772#39773#0" expanded="true" />
-                <element signature="e#52206#52218#0" expanded="true" />
-                <element signature="e#52432#52462#0" expanded="true" />
+                <element signature="e#18709#19512#0" expanded="true" />
+                <element signature="e#19511#19512#0" expanded="true" />
+                <element signature="e#19706#20609#0" expanded="true" />
+                <element signature="e#20608#20609#0" expanded="true" />
+                <element signature="e#20941#21455#0" expanded="true" />
+                <element signature="e#21454#21455#0" expanded="true" />
+                <element signature="e#21609#28047#0" expanded="true" />
+                <element signature="e#28046#28047#0" expanded="true" />
+                <element signature="e#28209#34174#0" expanded="true" />
+                <element signature="e#34173#34174#0" expanded="true" />
+                <element signature="e#50351#51587#0" expanded="true" />
+                <element signature="e#51586#51587#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -451,7 +449,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="92" y="-8" width="1282" height="784" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -463,15 +461,15 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3297546" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297546" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24959083" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24959083" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.398773" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.398773" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -500,12 +498,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>378</line>
+          <line>1671</line>
           <properties />
-          <option name="timeStamp" value="3" />
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="4" />
+      <option name="time" value="5" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
@@ -529,23 +527,50 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="32317">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#18709#19512#0" expanded="true" />
+            <element signature="e#19511#19512#0" expanded="true" />
+            <element signature="e#19706#20609#0" expanded="true" />
+            <element signature="e#20608#20609#0" expanded="true" />
+            <element signature="e#20941#21455#0" expanded="true" />
+            <element signature="e#21454#21455#0" expanded="true" />
+            <element signature="e#21609#28047#0" expanded="true" />
+            <element signature="e#28046#28047#0" expanded="true" />
+            <element signature="e#28209#34174#0" expanded="true" />
+            <element signature="e#34173#34174#0" expanded="true" />
+            <element signature="e#50351#51587#0" expanded="true" />
+            <element signature="e#51586#51587#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/WisdomInWords/SwtBrowserCanvas.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="493" max-vertical-offset="4250">
+          <caret line="41" column="19" selection-start-line="41" selection-start-column="19" selection-end-line="41" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="31620">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#3135#3576#0" expanded="true" />
-            <element signature="e#3575#3576#0" expanded="true" />
-            <element signature="e#8647#9063#0" expanded="true" />
-            <element signature="e#9062#9063#0" expanded="true" />
-            <element signature="e#19124#19694#0" expanded="true" />
-            <element signature="e#19693#19694#0" expanded="true" />
-            <element signature="e#20026#20540#0" expanded="true" />
-            <element signature="e#20539#20540#0" expanded="true" />
-            <element signature="e#36823#37696#0" expanded="true" />
-            <element signature="e#37695#37696#0" expanded="true" />
-            <element signature="e#39401#39773#0" expanded="true" />
-            <element signature="e#39772#39773#0" expanded="true" />
-            <element signature="e#52206#52218#0" expanded="true" />
-            <element signature="e#52432#52462#0" expanded="true" />
+            <element signature="e#18709#19512#0" expanded="true" />
+            <element signature="e#19511#19512#0" expanded="true" />
+            <element signature="e#19706#20609#0" expanded="true" />
+            <element signature="e#20608#20609#0" expanded="true" />
+            <element signature="e#20941#21455#0" expanded="true" />
+            <element signature="e#21454#21455#0" expanded="true" />
+            <element signature="e#21609#28047#0" expanded="true" />
+            <element signature="e#28046#28047#0" expanded="true" />
+            <element signature="e#28209#34174#0" expanded="true" />
+            <element signature="e#34173#34174#0" expanded="true" />
+            <element signature="e#50351#51587#0" expanded="true" />
+            <element signature="e#51586#51587#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -554,7 +579,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="493">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -596,7 +620,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.085574575" vertical-offset="84" max-vertical-offset="493">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -610,23 +633,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4701087" vertical-offset="3057" max-vertical-offset="31263">
-          <caret line="216" column="69" selection-start-line="216" selection-start-column="69" selection-end-line="216" selection-end-column="69" />
+        <state vertical-scroll-proportion="0.17337461" vertical-offset="7645" max-vertical-offset="31909">
+          <caret line="500" column="24" selection-start-line="500" selection-start-column="16" selection-end-line="500" selection-end-column="24" />
           <folding>
-            <element signature="e#3135#3576#0" expanded="true" />
-            <element signature="e#3575#3576#0" expanded="true" />
-            <element signature="e#8647#9063#0" expanded="true" />
-            <element signature="e#9062#9063#0" expanded="true" />
-            <element signature="e#19124#19694#0" expanded="true" />
-            <element signature="e#19693#19694#0" expanded="true" />
-            <element signature="e#20026#20540#0" expanded="true" />
-            <element signature="e#20539#20540#0" expanded="true" />
-            <element signature="e#36823#37696#0" expanded="true" />
-            <element signature="e#37695#37696#0" expanded="true" />
-            <element signature="e#39401#39773#0" expanded="true" />
-            <element signature="e#39772#39773#0" expanded="true" />
-            <element signature="e#52206#52218#0" expanded="true" />
-            <element signature="e#52432#52462#0" expanded="true" />
+            <element signature="e#18709#19512#0" expanded="true" />
+            <element signature="e#19511#19512#0" expanded="true" />
+            <element signature="e#19706#20609#0" expanded="true" />
+            <element signature="e#20608#20609#0" expanded="true" />
+            <element signature="e#20941#21455#0" expanded="true" />
+            <element signature="e#21454#21455#0" expanded="true" />
+            <element signature="e#21609#28047#0" expanded="true" />
+            <element signature="e#28046#28047#0" expanded="true" />
+            <element signature="e#28209#34174#0" expanded="true" />
+            <element signature="e#34173#34174#0" expanded="true" />
+            <element signature="e#50351#51587#0" expanded="true" />
+            <element signature="e#51586#51587#0" expanded="true" />
           </folding>
         </state>
       </provider>
