@@ -1646,7 +1646,7 @@ public class wTeacher extends JFrame {
                 String strLocalSocketAddress = "FAILED";
 
                 try {
-                    serverSocket = new ServerSocket(port, 1, InetAddress.getLocalHost());//new ServerSocket(0);//7373);
+                    serverSocket = new ServerSocket(port);//7373);new ServerSocket(port, 1, InetAddress.getLocalHost());
                     portNumber = serverSocket.getLocalPort();
                     spinnerPortNumber.setValue(portNumber);
 
