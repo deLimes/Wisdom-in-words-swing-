@@ -20,6 +20,9 @@ import java.nio.file.FileSystem;
 import java.nio.file.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Handler;
 import java.util.prefs.Preferences;
 
 
@@ -41,26 +44,30 @@ public class wTeacher extends JFrame {
     JScrollPane scrollPane;
     JPanel contentPane = new JPanel();
     JButton btnrBack;
-    boolean  flagEnSwitch, flagRuSwitch, stringSwitch;
-    int numberOfBlocks = 1, numberOfCollocationsInABlock = 1, fontSize = 12;
+    boolean flagEnSwitch, flagRuSwitch, stringSwitch;
+    int numberOfBlocks = 1, numberOfCollocationsInABlock = 1, fontSize = 12, portNumber = 7373;
     int rowBeginIndexOfLearnedWords = 0, rowBeginIndexOfWellLearnedWords = 0, rowBeginIndexOfNativeWords = 0;
     int countOfLearnedWords = 0;
     Integer sendersCreated = 0;
-    List <Collocation> listDictionary = new ArrayList<Collocation>();
+    List<Collocation> listDictionary = new ArrayList<Collocation>();
     JTextField jtfFilterValue;
     JProgressBar progressBar = new JProgressBar();
     String MASSAGE_WRONG_FORMAT = "Use format: [ENword][~][RUword]";
+    String title = "ILEW - I Lern English Words";
     JLabel labelNumberOfLearnedWords = new JLabel("");
     JLabel labelNumberOfDifficultWords = new JLabel("");
     JLabel labelNumberOfWordsLeft = new JLabel("");
     JLabel labelNumberOfWordsTotal = new JLabel("");
-    JSpinner spinnerNumberOfBlocks, spinnerNumberOfCollocationsInABlock, spinnerFontSize;
+    JSpinner spinnerNumberOfBlocks, spinnerNumberOfCollocationsInABlock, spinnerFontSize, spinnerPortNumber;
     JButton btnStartStop;
     TimerLabel timerLabel;
     TimerLabel differenceTimeLabel;
     boolean timerStarted;
     long timeOfLastMeasurement = 0;
     boolean swap = false;
+    final int NUMBER_OF_ATTEMPTS_TO_CREATE_SERVER = 5;
+    int countOfAttemptsToCreateServer = 0;
+    ServerSocket serverSocket;
 
     private boolean EnglishTextLayout = false;
     char[] ArrayEnglishCharacters = {'h', 'j', 'k', 'l', 'y', 'u', 'i', 'o',
@@ -82,15 +89,15 @@ public class wTeacher extends JFrame {
 
     }
 
-    private wTeacher(){
+    private wTeacher() {
         initPanel();
         initFrame();
     }
 
-    private void initFrame (){
+    private void initFrame() {
         pack();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle("ILEW - I Lern English Words");//0.5Keyboard
+        setTitle(title);//0.5Keyboard
         setLocationRelativeTo(null);
         setResizable(false);
         setLayout(new BorderLayout());
@@ -102,6 +109,7 @@ public class wTeacher extends JFrame {
             public void windowClosing(WindowEvent e) {
                 Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
                 prefs.putInt("fontSize", fontSize);
+                prefs.putInt("portNumber", portNumber);
                 prefs.putInt("selectedRow", table.getSelectedRow());
                 prefs.putInt("countOfLearnedWords", countOfLearnedWords);
 
@@ -110,7 +118,7 @@ public class wTeacher extends JFrame {
         });
     }
 
-    private void initPanel (){
+    private void initPanel() {
 
 
         panel = new JPanel();
@@ -120,9 +128,9 @@ public class wTeacher extends JFrame {
         init();
     }
 
-    private void init(){
+    private void init() {
 
-        table = new JTable(){
+        table = new JTable() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column != 1;
@@ -139,19 +147,19 @@ public class wTeacher extends JFrame {
                         && colIndex == table.getSelectedColumn()
                         && tableChanged;
 
-                if(rendererMyJTextPane) {
+                if (rendererMyJTextPane) {
                     rComp = super.prepareRenderer(myJTextPaneRenderer, rowIndex, colIndex);
-                }else if(colIndex == 1){
+                } else if (colIndex == 1) {
                     rComp = super.prepareRenderer(myTextAreaRenderer, rowIndex, colIndex);
-                }else if(colIndex == 3){
-                    rComp.setBackground(new Color(0f,0f,0f,0f));
+                } else if (colIndex == 3) {
+                    rComp.setBackground(new Color(0f, 0f, 0f, 0f));
                 }
 
                 if (rowIndex + 1 > rowBeginIndexOfLearnedWords && rowIndex + 1 <= rowBeginIndexOfWellLearnedWords) {
                     rComp.setBackground(new Color(0xF0FFFF));
-                }else if (rowIndex + 1 > rowBeginIndexOfWellLearnedWords && rowIndex < rowBeginIndexOfNativeWords){
+                } else if (rowIndex + 1 > rowBeginIndexOfWellLearnedWords && rowIndex < rowBeginIndexOfNativeWords) {
                     rComp.setBackground(new Color(0xD3D3D3));//0xB0C4DE));
-                }else if (rowIndex + 1 > rowBeginIndexOfNativeWords){
+                } else if (rowIndex + 1 > rowBeginIndexOfNativeWords) {
                     rComp.setBackground(new Color(0xA0FAA0));
                 } else if ((rowIndex + 1) % numberOfCollocationsInABlock == 0 && !rendererMyJTextPane) {
                     rComp.setBackground(new Color(0xF0F8FF));
@@ -175,9 +183,9 @@ public class wTeacher extends JFrame {
         };
 
 
-        dtm = new DefaultTableModel(){
+        dtm = new DefaultTableModel() {
 
-            public Class<?> getColumnClass(int column){
+            public Class<?> getColumnClass(int column) {
 
                 switch (column) {
                     case 0:
@@ -210,16 +218,16 @@ public class wTeacher extends JFrame {
         defineIndexesOfWords();
 
         Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-        labelNumberOfLearnedWords.setText("learned: "+Integer.toString( prefs.getInt("countOfLearnedWords", 0) ));
-        labelNumberOfDifficultWords.setText("difficult: "+Integer.toString( prefs.getInt("countOfDifficultWords", 0) ));
-        labelNumberOfWordsLeft.setText("left: "+Integer.toString( prefs.getInt("countOfLeftWords", 0) ));
-        labelNumberOfWordsTotal.setText("total: " + Integer.toString( prefs.getInt("countOfTotalWords", 0) ));
+        labelNumberOfLearnedWords.setText("learned: " + Integer.toString(prefs.getInt("countOfLearnedWords", 0)));
+        labelNumberOfDifficultWords.setText("difficult: " + Integer.toString(prefs.getInt("countOfDifficultWords", 0)));
+        labelNumberOfWordsLeft.setText("left: " + Integer.toString(prefs.getInt("countOfLeftWords", 0)));
+        labelNumberOfWordsTotal.setText("total: " + Integer.toString(prefs.getInt("countOfTotalWords", 0)));
 
         countOfLearnedWords = prefs.getInt("countOfLearnedWords", 0);
-        progressBar.setValue((int)((double)countOfLearnedWords / listDictionary.size() *  100));
+        progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
 
         int j = 0;
-        for (Collocation i: listDictionary){
+        for (Collocation i : listDictionary) {
             dtm.addRow(new Object[0]);
             dtm.setValueAt(i.learnedEn, j, 0);
             dtm.setValueAt(i.en, j, 1);
@@ -231,12 +239,12 @@ public class wTeacher extends JFrame {
         setColumnWidth();
 
         englishLeft = prefs.getBoolean("englishLeft", true);
-        if (!englishLeft){
+        if (!englishLeft) {
             changeColumns(true);
         }
 
         final boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
-        if (answersWereHidden){
+        if (answersWereHidden) {
             hideAnswers();
         }
 
@@ -245,7 +253,7 @@ public class wTeacher extends JFrame {
             public void valueChanged(ListSelectionEvent e) {
                 tableChanged = false;
                 rowChanged = true;
-                if(!filterChanged && previousRow != -1) {
+                if (!filterChanged && previousRow != -1) {
                     dtm.fireTableCellUpdated(previousRow, previousColumn);
                 }
                 previousRow = table.getSelectedRow();
@@ -280,13 +288,12 @@ public class wTeacher extends JFrame {
 
                 tableChanged = false;//
                 columnChanged = true;
-                if(!filterChanged && previousRow != -1) {
+                if (!filterChanged && previousRow != -1) {
                     dtm.fireTableCellUpdated(previousRow, previousColumn);
                 }
                 previousColumn = table.getSelectedColumn();
             }
         });
-
 
 
         dtm.addTableModelListener(new TableModelListener() {
@@ -297,11 +304,11 @@ public class wTeacher extends JFrame {
                 int indexOfTheSelectedRow = table.getSelectedRow();
                 int indexConvertOfTheSelectedColumn = table.convertColumnIndexToModel(table.getSelectedColumn());
                 if (indexOfTheSelectedRow == -1 || indexConvertOfTheSelectedColumn == -1
-                                                || indexOfTheSelectedRow >= dtm.getDataVector().size()
-                                                || listDictionary.size() == 0
-                                                || filterChanged
-                                                || indexOfTheSelectedRow == -1
-                                                || previousRow == -1) {
+                        || indexOfTheSelectedRow >= dtm.getDataVector().size()
+                        || listDictionary.size() == 0
+                        || filterChanged
+                        || indexOfTheSelectedRow == -1
+                        || previousRow == -1) {
 
                     if (jtfFilterValue.getText().isEmpty()) {
                         filterChanged = false;
@@ -317,11 +324,11 @@ public class wTeacher extends JFrame {
                     if (indexOfTheSelectedColumn == 0) {
                         if (englishLeft) {
                             collocation.learnedEn = (Boolean) v;
-                        }else{
+                        } else {
                             collocation.learnedRu = (Boolean) v;
                         }
 
-                        if (!flagEnSwitch && !(Boolean) v){
+                        if (!flagEnSwitch && !(Boolean) v) {
                             flagEnSwitch = true;
 
                             collocation.learnedEn = collocation.learnedRu = false;
@@ -334,11 +341,11 @@ public class wTeacher extends JFrame {
                     } else if (indexOfTheSelectedColumn == 2) {
                         if (englishLeft) {
                             collocation.learnedRu = (Boolean) v;
-                        }else{
+                        } else {
                             collocation.learnedEn = (Boolean) v;
                         }
 
-                        if (!flagRuSwitch && (Boolean) v){
+                        if (!flagRuSwitch && (Boolean) v) {
                             flagRuSwitch = true;
 
                             collocation.learnedEn = collocation.learnedRu = true;
@@ -351,16 +358,16 @@ public class wTeacher extends JFrame {
                         }
                     }
 
-                    if(!stringSwitch) {
+                    if (!stringSwitch) {
                         stringSwitch = true;
 
-                        if(collocation.learnedEn && collocation.learnedRu){
+                        if (collocation.learnedEn && collocation.learnedRu) {
                             if (englishLeft) {
                                 dtm.setValueAt(collocation.ru, indexOfTheSelectedRow, 3);
                             } else {
                                 dtm.setValueAt(collocation.en, indexOfTheSelectedRow, 1);
                             }
-                        }else if(collocation.learnedEn != collocation.learnedRu && answersAreHidden){
+                        } else if (collocation.learnedEn != collocation.learnedRu && answersAreHidden) {
                             if (englishLeft) {
                                 dtm.setValueAt("", table.getSelectedRow(), 3);
                             } else {
@@ -372,12 +379,12 @@ public class wTeacher extends JFrame {
                         stringSwitch = false;
 
                         int i = 0;
-                        for(Collocation colloc: listDictionary){
-                            if (colloc.learnedEn != colloc.learnedRu){
+                        for (Collocation colloc : listDictionary) {
+                            if (colloc.learnedEn != colloc.learnedRu) {
                                 i++;
                             }
                         }
-                        progressBar.setValue((int)(((double)i / numberOfCollocationsInABlock) *  100));
+                        progressBar.setValue((int) (((double) i / numberOfCollocationsInABlock) * 100));
 
                     }
 
@@ -408,23 +415,23 @@ public class wTeacher extends JFrame {
                     String resultText;
                     if (answer.equals(original)) {
                         resultText = original + "✓";
-                        if(answersAreHidden) {
+                        if (answersAreHidden) {
                             dtm.setValueAt("",
                                     table.getSelectedRow(),
                                     indexConvertOfTheSelectedColumn);
-                        }else{
+                        } else {
                             dtm.setValueAt(resultText,
                                     table.getSelectedRow(),
                                     indexConvertOfTheSelectedColumn);
                         }
 
-                        if(!englishLeft) {
+                        if (!englishLeft) {
                             listDictionary.get(indexOfTheSelectedRow).isDifficult = false;
                         }
                     } else {
-                        if(englishLeft){
+                        if (englishLeft) {
                             resultText = original + "⋆";
-                        }else{
+                        } else {
                             resultText = original + "⚓";
                             listDictionary.get(indexOfTheSelectedRow).isDifficult = true;
 
@@ -434,11 +441,11 @@ public class wTeacher extends JFrame {
                             differenceTimeLabel.setTimeColor(Color.RED);
                             differenceTimeLabel.setStringTime(StringUtils.timeToString(timerLabel.getTime()));
                         }
-                        if(answersAreHidden) {
+                        if (answersAreHidden) {
                             dtm.setValueAt("",
                                     table.getSelectedRow(),
                                     indexConvertOfTheSelectedColumn);
-                        }else{
+                        } else {
                             dtm.setValueAt(resultText,
                                     table.getSelectedRow(),
                                     indexConvertOfTheSelectedColumn);
@@ -449,7 +456,8 @@ public class wTeacher extends JFrame {
                     if (indexConvertOfTheSelectedColumn == 1) {
                         collocation.en = resultText;
                     } else if (indexConvertOfTheSelectedColumn == 3) {
-                        collocation.ru = resultText;;
+                        collocation.ru = resultText;
+                        ;
                     }
 
                     tableChanged = true;
@@ -503,18 +511,18 @@ public class wTeacher extends JFrame {
         btnLearn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(swap) {
+                if (swap) {
 
                     table.setRowSelectionInterval(0, 0);
                     scrollPane.getViewport().setViewPosition(new Point(0, 0));
 
-                }else{
+                } else {
 
                     int i = 0;
                     int j = 0;
-                    for(Collocation colloc: listDictionary){
+                    for (Collocation colloc : listDictionary) {
                         i++;
-                        if (colloc.learnedEn != colloc.learnedRu){
+                        if (colloc.learnedEn != colloc.learnedRu) {
                             j = i;
                         }
                     }
@@ -533,11 +541,11 @@ public class wTeacher extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if(swap){
+                if (swap) {
                     int j = listDictionary.size() - 1;
                     table.getSelectionModel().setSelectionInterval(j, j);
                     table.scrollRectToVisible(new Rectangle(table.getCellRect(j, 0, true)));
-                }else {
+                } else {
                     int j = 0;
                     for (Collocation i : listDictionary) {
                         if (i.learnedEn && i.learnedRu) {
@@ -571,7 +579,7 @@ public class wTeacher extends JFrame {
                 getContentPane().add(panel);
                 getContentPane().revalidate();
                 getContentPane().repaint();
-                setSize(new Dimension(getSize().width, getSize().height-1));
+                setSize(new Dimension(getSize().width, getSize().height - 1));
 
             }
         });
@@ -586,9 +594,9 @@ public class wTeacher extends JFrame {
                 Comparator enRuComparator = new Comparator<Collocation>() {
                     @Override
                     public int compare(Collocation o1, Collocation o2) {
-                        if(englishLeft){
+                        if (englishLeft) {
                             return o1.en.compareTo(o2.en);
-                        }else{
+                        } else {
                             return o1.ru.compareTo(o2.ru);
                         }
                     }
@@ -602,19 +610,19 @@ public class wTeacher extends JFrame {
 
                     Collocation collocation = listDictionary.get(i);
 
-                    if(collocation.learnedEn != collocation.learnedRu){
+                    if (collocation.learnedEn != collocation.learnedRu) {
                         listOfStudiedWords.add(collocation);
                         listDictionary.remove(i);
                         i--;
                         continue;
                     }
-                    if(collocation.isDifficult){
+                    if (collocation.isDifficult) {
                         listOfDifficultWords.add(collocation);
                         listDictionary.remove(i);
                         i--;
                         continue;
                     }
-                    if(collocation.learnedEn && collocation.learnedRu){
+                    if (collocation.learnedEn && collocation.learnedRu) {
                         listOfLearnedWords.add(collocation);
                         listDictionary.remove(i);
                         i--;
@@ -641,7 +649,7 @@ public class wTeacher extends JFrame {
                     rowBeginIndexOfLearnedWords = j;
                 }
                 for (Collocation collocation : listDictionary) {
-                    if(collocation.learnedEn == collocation.learnedRu) {
+                    if (collocation.learnedEn == collocation.learnedRu) {
                         dtm.addRow(new Object[0]);
                         dtm.setValueAt(collocation.learnedEn, j, 0);
                         dtm.setValueAt(collocation.en, j, 1);
@@ -669,9 +677,9 @@ public class wTeacher extends JFrame {
                 for (Collocation collocation : listOfLearnedWords) {
                     countOfLearnedWords++;
 
-                    if(j >= rowBeginIndexOfLearnedWords + numberOfBlocks * numberOfCollocationsInABlock){
+                    if (j >= rowBeginIndexOfLearnedWords + numberOfBlocks * numberOfCollocationsInABlock) {
                         listOfWellLearnedWords.add(collocation);
-                    }else {
+                    } else {
                         listDictionary.add(collocation);
                         dtm.addRow(new Object[0]);
                         dtm.setValueAt(collocation.learnedEn, j, 0);
@@ -683,7 +691,7 @@ public class wTeacher extends JFrame {
                     }
                 }
                 rowBeginIndexOfNativeWords = rowBeginIndexOfWellLearnedWords + numberOfBlocks * numberOfCollocationsInABlock;
-                progressBar.setValue((int)((double)countOfLearnedWords / listDictionary.size() *  100));
+                progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
                 for (Collocation collocation : listOfWellLearnedWords) {
                     listDictionary.add(collocation);
                     dtm.addRow(new Object[0]);
@@ -694,10 +702,10 @@ public class wTeacher extends JFrame {
                     j++;
                 }
 
-                labelNumberOfLearnedWords.setText("learned: "+Integer.toString(countOfLearnedWords));
-                labelNumberOfDifficultWords.setText("difficult: "+Integer.toString(countOfDifficultWords));
-                labelNumberOfWordsLeft.setText("left: "+Integer.toString(listDictionary.size() - countOfLearnedWords));
-                labelNumberOfWordsTotal.setText("total: "+Integer.toString(listDictionary.size()));
+                labelNumberOfLearnedWords.setText("learned: " + Integer.toString(countOfLearnedWords));
+                labelNumberOfDifficultWords.setText("difficult: " + Integer.toString(countOfDifficultWords));
+                labelNumberOfWordsLeft.setText("left: " + Integer.toString(listDictionary.size() - countOfLearnedWords));
+                labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
 
                 Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
                 prefs.putInt("countOfLearnedWords", countOfLearnedWords);
@@ -707,7 +715,7 @@ public class wTeacher extends JFrame {
 
 
                 boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
-                if (answersWereHidden){
+                if (answersWereHidden) {
                     hideAnswers();
                 }
 
@@ -730,20 +738,20 @@ public class wTeacher extends JFrame {
 
                     Collocation collocation = listDictionary.get(i);
 
-                    if(collocation.learnedEn != collocation.learnedRu){
+                    if (collocation.learnedEn != collocation.learnedRu) {
                         listOfStudiedWords.add(collocation);
                         listDictionary.remove(i);
                         i--;
                         continue;
                     }
-                    if(collocation.isDifficult){
+                    if (collocation.isDifficult) {
 
                         listOfDifficultWords.add(collocation);
                         listDictionary.remove(i);
                         i--;
                         continue;
                     }
-                    if(collocation.learnedEn && collocation.learnedRu){
+                    if (collocation.learnedEn && collocation.learnedRu) {
                         listOfLearnedWords.add(collocation);
                         listDictionary.remove(i);
                         i--;
@@ -770,7 +778,7 @@ public class wTeacher extends JFrame {
                 }
 
                 for (Collocation collocation : listDictionary) {
-                    if(collocation.learnedEn == collocation.learnedRu) {
+                    if (collocation.learnedEn == collocation.learnedRu) {
                         dtm.addRow(new Object[0]);
                         dtm.setValueAt(collocation.learnedEn, j, 0);
                         dtm.setValueAt(collocation.en, j, 1);
@@ -797,9 +805,9 @@ public class wTeacher extends JFrame {
                 for (Collocation collocation : listOfLearnedWords) {
                     countOfLearnedWords++;
 
-                    if(j >= rowBeginIndexOfLearnedWords + numberOfBlocks * numberOfCollocationsInABlock){
+                    if (j >= rowBeginIndexOfLearnedWords + numberOfBlocks * numberOfCollocationsInABlock) {
                         listOfWellLearnedWords.add(collocation);
-                    }else {
+                    } else {
                         listDictionary.add(collocation);
                         dtm.addRow(new Object[0]);
                         dtm.setValueAt(collocation.learnedEn, j, 0);
@@ -811,7 +819,7 @@ public class wTeacher extends JFrame {
                     }
                 }
                 rowBeginIndexOfNativeWords = rowBeginIndexOfWellLearnedWords + numberOfBlocks * numberOfCollocationsInABlock;
-                progressBar.setValue((int)((double)countOfLearnedWords / listDictionary.size() *  100));
+                progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
                 Collections.shuffle(listOfWellLearnedWords);
                 for (Collocation collocation : listOfWellLearnedWords) {
                     listDictionary.add(collocation);
@@ -823,10 +831,10 @@ public class wTeacher extends JFrame {
                     j++;
                 }
 
-                labelNumberOfLearnedWords.setText("learned: "+Integer.toString(countOfLearnedWords));
-                labelNumberOfDifficultWords.setText("difficult: "+Integer.toString(countOfDifficultWords));
-                labelNumberOfWordsLeft.setText("left: "+Integer.toString(listDictionary.size() - countOfLearnedWords));
-                labelNumberOfWordsTotal.setText("total: "+Integer.toString(listDictionary.size()));
+                labelNumberOfLearnedWords.setText("learned: " + Integer.toString(countOfLearnedWords));
+                labelNumberOfDifficultWords.setText("difficult: " + Integer.toString(countOfDifficultWords));
+                labelNumberOfWordsLeft.setText("left: " + Integer.toString(listDictionary.size() - countOfLearnedWords));
+                labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
 
                 Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
                 prefs.putInt("countOfLearnedWords", countOfLearnedWords);
@@ -836,7 +844,7 @@ public class wTeacher extends JFrame {
 
 
                 boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
-                if (answersWereHidden){
+                if (answersWereHidden) {
                     hideAnswers();
                 }
 
@@ -923,7 +931,7 @@ public class wTeacher extends JFrame {
         JTextField textField = new JTextField();
         textField.setFont(new Font(table.getFont().getName(), table.getFont().getStyle(), fontSize));
         textField.setBorder(new LineBorder(Color.BLACK));
-        DefaultCellEditor dce = new DefaultCellEditor( textField );
+        DefaultCellEditor dce = new DefaultCellEditor(textField);
         table.getColumnModel().getColumn(1).setCellEditor(dce);
         table.getColumnModel().getColumn(3).setCellEditor(dce);
 
@@ -948,7 +956,7 @@ public class wTeacher extends JFrame {
         });
 
 
-        int sizeListDictionary = listDictionary.size()==0 ? 1 :listDictionary.size();
+        int sizeListDictionary = listDictionary.size() == 0 ? 1 : listDictionary.size();
         JLabel labelNumberOfBlocks = new JLabel("Blocks");
         spinnerNumberOfBlocks = new JSpinner(new SpinnerNumberModel(1, 1, sizeListDictionary, 1));
         spinnerNumberOfBlocks.setToolTipText("Number of blocks");
@@ -987,6 +995,34 @@ public class wTeacher extends JFrame {
             }
         });
 
+        portNumber = prefs.getInt("portNumber", portNumber);
+        JLabel labelPortNumber = new JLabel("Port number");
+        spinnerPortNumber = new JSpinner(new SpinnerNumberModel(portNumber, 1, 65535, 1));
+        spinnerPortNumber.setToolTipText("Server port number");
+
+        spinnerPortNumber.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+
+                int value = (Integer) spinnerPortNumber.getValue();
+                if (value != portNumber) {
+                    portNumber = value;
+                    /*
+                    if(serverSocket != null){
+                        try {
+                            serverSocket.close();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    */
+                    startServer(portNumber);
+                }
+
+            }
+        });
+
+
         jtfFilterValue = new JTextField("", 25);
 
         jtfFilterValue.addKeyListener(new KeyAdapter() {
@@ -1013,9 +1049,9 @@ public class wTeacher extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 String strCollocation = jtfFilterValue.getText().toString();
-                if (strCollocation.contains("~")){
+                if (strCollocation.contains("~")) {
                     String[] collocationParts = strCollocation.split("~");
-                    if(collocationParts.length != 2){
+                    if (collocationParts.length != 2) {
                         showMessageDialog(MASSAGE_WRONG_FORMAT);
                         return;
                     }
@@ -1059,13 +1095,13 @@ public class wTeacher extends JFrame {
                     int countOfLeftWords = prefs.getInt("countOfLeftWords", 0);
 
                     countOfLeftWords++;
-                    labelNumberOfWordsLeft.setText("left: "+Integer.toString(countOfLeftWords));
-                    labelNumberOfWordsTotal.setText("total: "+Integer.toString(listDictionary.size()));
+                    labelNumberOfWordsLeft.setText("left: " + Integer.toString(countOfLeftWords));
+                    labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
 
                     prefs.putInt("countOfLeftWords", countOfLeftWords);
                     prefs.putInt("countOfTotalWords", listDictionary.size());
 
-                }else{
+                } else {
                     showMessageDialog(MASSAGE_WRONG_FORMAT);
                 }
 
@@ -1154,17 +1190,17 @@ public class wTeacher extends JFrame {
                     btnStartStop.setText("Start");
 
                     long differenceTime = timerLabel.getTime() - timeOfLastMeasurement;
-                    if (differenceTime < 0){
+                    if (differenceTime < 0) {
                         differenceTimeLabel.setTimeColor(new Color(0, 128, 0));
                         differenceTime *= -1;
-                    }else{
+                    } else {
                         differenceTimeLabel.setTimeColor(Color.RED);
                     }
 
                     timeOfLastMeasurement = timerLabel.getTime();
 
                     differenceTimeLabel.setStringTime(StringUtils.timeToString(differenceTime));
-                }else {
+                } else {
                     timerLabel.startTimer();
                     timerStarted = true;
                     btnStartStop.setText("Stop");
@@ -1185,14 +1221,16 @@ public class wTeacher extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 swap = !swap;
-                if(swap){
+                if (swap) {
                     btnSwap.setBackground(new Color(0xFA8072));
-                }else{
+                } else {
                     btnSwap.setBackground(btnHide.getBackground());
                 }
 
             }
         });
+
+        startServer(portNumber);
 
         JButton btnTest = new JButton("Test");
         // Слушатель обработки события
@@ -1217,15 +1255,20 @@ public class wTeacher extends JFrame {
         labelNumberOfWordsLeft.setForeground(Color.RED);
         labelNumberOfWordsTotal.setForeground(Color.BLACK);
 
+
         panel.add(btnReset);
         panel.add(btnHide);
         panel.add(btnShow);
-        panel.add(btnChange);
         panel.add(btnLearn);
         panel.add(btnrRepeat);
         panel.add(btnSort);
         panel.add(btnShuffle);
+        panel.add(btnChange);
 
+        //panel.add(btnTest);
+
+        panel.add(labelPortNumber);
+        panel.add(spinnerPortNumber);
         panel.add(progressBar);
         panel.add(labelNumberOfLearnedWords);
         panel.add(labelNumberOfDifficultWords);
@@ -1248,143 +1291,92 @@ public class wTeacher extends JFrame {
         panel.add(spinnerNumberOfBlocks);
         panel.add(labelNumberOfCollocationsInABlock);
         panel.add(spinnerNumberOfCollocationsInABlock);
-        //panel.add(btnTest);
 
-        //start server
-        //Создание потока
-        Thread serverSocketThread = new Thread(new Runnable()
-        {
-            public void run() //Этот метод будет выполняться в побочном потоке
-            {
-                List<Sender> senderList = new ArrayList<Sender>();
+    }
 
-                ServerSocket ss = null;
-                try {
-                    ss = new ServerSocket(7373);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
 
-                    while (true) {
-                        System.out.println("the server is start."  + " /socket server: "+ss.getLocalSocketAddress());
+    private void hideAnswers() {
 
-                        Socket s = ss.accept();
 
-                        Sender sndr = new Sender(s);
-                        sndr.start();
-                    }
+        hideAnswers = true;
+        tableChanged = false;
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println(e);
-                } finally {
-            /*
-            for (Sender sndr : senderList) {
-                sndr.setFinishFlag();
+        if (englishLeft) {
+            for (int i = 0; i < listDictionary.size(); i++) {
+                dtm.setValueAt("", i, 3);
             }
-            */
-                    try {
-                        ss.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-
+        } else {
+            for (int i = 0; i < listDictionary.size(); i++) {
+                dtm.setValueAt("", i, 1);
             }
-        });
-        serverSocketThread.start();
+        }
 
+        hideAnswers = false;
+        answersAreHidden = true;
+        Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
+        prefs.putBoolean("answersWereHidden", answersAreHidden);
 
+    }
 
+    private void showAnswers() {
 
+        showAnswers = true;
+        tableChanged = false;
+        answersAreHidden = false;
 
+        int j = 0;
+        if (englishLeft) {
+            for (Collocation collocation : listDictionary) {
+                dtm.setValueAt(collocation.ru, j, 3);
+                j++;
             }
-
-            private void hideAnswers() {
-
-
-                hideAnswers = true;
-                tableChanged = false;
-
-                if (englishLeft) {
-                    for (int i = 0; i < listDictionary.size(); i++) {
-                        dtm.setValueAt("", i, 3);
-                    }
-                } else {
-                    for (int i = 0; i < listDictionary.size(); i++) {
-                        dtm.setValueAt("", i, 1);
-                    }
-                }
-
-                hideAnswers = false;
-                answersAreHidden = true;
-                Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-                prefs.putBoolean("answersWereHidden", answersAreHidden);
-
+        } else {
+            for (Collocation collocation : listDictionary) {
+                dtm.setValueAt(collocation.en, j, 1);
+                j++;
             }
+        }
+        showAnswers = false;
 
-            private void showAnswers() {
+        Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
+        prefs.putBoolean("answersWereHidden", answersAreHidden);
+    }
 
-                showAnswers = true;
-                tableChanged = false;
-                answersAreHidden = false;
+    private void setColumnWidth() {
 
-                int j = 0;
-                if (englishLeft) {
-                    for (Collocation collocation : listDictionary) {
-                        dtm.setValueAt(collocation.ru, j, 3);
-                        j++;
-                    }
-                } else {
-                    for (Collocation collocation : listDictionary) {
-                        dtm.setValueAt(collocation.en, j, 1);
-                        j++;
-                    }
-                }
-                showAnswers = false;
+        columnModel.getColumn(0).setMaxWidth(25);
+        columnModel.getColumn(1).setMaxWidth(425);
+        columnModel.getColumn(2).setMaxWidth(25);
+        columnModel.getColumn(3).setMaxWidth(425);
 
-                Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-                prefs.putBoolean("answersWereHidden", answersAreHidden);
-            }
+    }
 
-            private void setColumnWidth() {
+    private void setRowFilter(String text) {
 
-                columnModel.getColumn(0).setMaxWidth(25);
-                columnModel.getColumn(1).setMaxWidth(425);
-                columnModel.getColumn(2).setMaxWidth(25);
-                columnModel.getColumn(3).setMaxWidth(425);
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(dtm);
 
-            }
+        RowFilter<TableModel, Object> firstFiler = null;
+        RowFilter<TableModel, Object> secondFilter = null;
+        List<RowFilter<TableModel, Object>> filters = new ArrayList<RowFilter<TableModel, Object>>();
+        RowFilter<TableModel, Object> compoundRowFilter = null;
+        try {
+            firstFiler = RowFilter.regexFilter(text, 1);
+            secondFilter = RowFilter.regexFilter(text, 3);
+            filters.add(firstFiler);
+            filters.add(secondFilter);
+            compoundRowFilter = RowFilter.orFilter(filters);
+        } catch (java.util.regex.PatternSyntaxException e) {
+            return;
+        }
+        sorter.setRowFilter(compoundRowFilter);
+        table.setRowSorter(sorter);
+    }
 
-            private void setRowFilter(String text) {
+    private void showMessageDialog(String strMessage) {
 
-                TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(dtm);
+        JOptionPane.showMessageDialog(wTeacher.this, strMessage);
 
-                RowFilter<TableModel, Object> firstFiler = null;
-                RowFilter<TableModel, Object> secondFilter = null;
-                List<RowFilter<TableModel,Object>> filters = new ArrayList<RowFilter<TableModel,Object>>();
-                RowFilter<TableModel, Object> compoundRowFilter = null;
-                try {
-                    firstFiler = RowFilter.regexFilter(text, 1);
-                    secondFilter = RowFilter.regexFilter(text, 3);
-                    filters.add(firstFiler);
-                    filters.add(secondFilter);
-                    compoundRowFilter = RowFilter.orFilter(filters);
-                } catch (java.util.regex.PatternSyntaxException e) {
-                    return;
-                }
-                sorter.setRowFilter(compoundRowFilter);
-                table.setRowSorter(sorter);
-            }
-
-            private void showMessageDialog(String strMessage) {
-
-                JOptionPane.showMessageDialog(wTeacher.this, strMessage);
-
-            }
+    }
 
     private void saveListDictionary() {
 
@@ -1396,7 +1388,7 @@ public class wTeacher extends JFrame {
             // открываем поток для записи
             Writer bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));//"UTF-8"));
             // пишем данные
-            bw.write(Integer.toString(numberOfBlocks)+";"+Integer.toString(numberOfCollocationsInABlock)+"\r\n");
+            bw.write(Integer.toString(numberOfBlocks) + ";" + Integer.toString(numberOfCollocationsInABlock) + "\r\n");
             bw.write(jsonStr);
             // закрываем поток
             bw.close();
@@ -1406,13 +1398,13 @@ public class wTeacher extends JFrame {
 
     }
 
-    private void restoreListDictionary(){
+    private void restoreListDictionary() {
 
         Path filePath;
 
         final File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
         File file = new File(sysTempDir, "savedListDictionary");
-        if (!file.exists()){
+        if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
@@ -1454,7 +1446,7 @@ public class wTeacher extends JFrame {
 
     }
 
-    private void changeColumns(boolean softwareChange){
+    private void changeColumns(boolean softwareChange) {
 
         final TableColumnModel finalColumnModel = columnModel;
 
@@ -1463,14 +1455,14 @@ public class wTeacher extends JFrame {
         Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
         boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
 
-        if(answersAreHidden){
+        if (answersAreHidden) {
             answersWereHidden = true;
         }
         showAnswers();
 
-        if (softwareChange){
+        if (softwareChange) {
             englishLeft = prefs.getBoolean("englishLeft", englishLeft);
-        }else {
+        } else {
             englishLeft = !englishLeft;
             prefs.putBoolean("englishLeft", englishLeft);
         }
@@ -1483,14 +1475,14 @@ public class wTeacher extends JFrame {
         finalColumnModel.moveColumn(first, last);
         finalColumnModel.moveColumn(first, last);
 
-        if(answersWereHidden){
+        if (answersWereHidden) {
             hideAnswers();
         }
 
 
     }
 
-    private void resetListDictionary(){
+    private void resetListDictionary() {
 
         Path filePath;
         URL resourceURL = getClass().getResource("/etalonDictionary");
@@ -1519,7 +1511,7 @@ public class wTeacher extends JFrame {
         List<String> lines = null;
         try {
             lines = Files.readAllLines(filePath, Charset.forName("UTF-8"));
-            if (fileSystem != null){
+            if (fileSystem != null) {
                 fileSystem.close();
             }
         } catch (IOException e) {
@@ -1534,7 +1526,7 @@ public class wTeacher extends JFrame {
         table.clearSelection();
         dtm.getDataVector().clear();
         int j = 0;
-        for (Collocation i: listDictionary){
+        for (Collocation i : listDictionary) {
             dtm.addRow(new Object[0]);
             dtm.setValueAt(i.learnedEn, j, 0);
             dtm.setValueAt(i.en, j, 1);
@@ -1545,8 +1537,8 @@ public class wTeacher extends JFrame {
 
         labelNumberOfLearnedWords.setText("learned: 0");
         labelNumberOfDifficultWords.setText("difficult: 0");
-        labelNumberOfWordsLeft.setText("left: "+Integer.toString(listDictionary.size()));
-        labelNumberOfWordsTotal.setText("total: "+Integer.toString(listDictionary.size()));
+        labelNumberOfWordsLeft.setText("left: " + Integer.toString(listDictionary.size()));
+        labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
 
         Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
 
@@ -1557,9 +1549,9 @@ public class wTeacher extends JFrame {
 
     }
 
-    private void defineIndexesOfWords(){
+    private void defineIndexesOfWords() {
 
-        List <Collocation> listDictionaryCopy = new ArrayList<Collocation>();
+        List<Collocation> listDictionaryCopy = new ArrayList<Collocation>();
 
         for (Collocation collocation : listDictionary) {
             listDictionaryCopy.add(new Collocation(
@@ -1578,20 +1570,20 @@ public class wTeacher extends JFrame {
 
             Collocation collocation = listDictionaryCopy.get(i);
 
-            if(collocation.learnedEn != collocation.learnedRu){
+            if (collocation.learnedEn != collocation.learnedRu) {
                 listOfStudiedWords.add(collocation);
                 listDictionaryCopy.remove(i);
                 i--;
                 continue;
             }
-            if(collocation.isDifficult){
+            if (collocation.isDifficult) {
 
                 listOfDifficultWords.add(collocation);
                 listDictionaryCopy.remove(i);
                 i--;
                 continue;
             }
-            if(collocation.learnedEn && collocation.learnedRu){
+            if (collocation.learnedEn && collocation.learnedRu) {
                 listOfLearnedWords.add(collocation);
                 listDictionaryCopy.remove(i);
                 i--;
@@ -1608,7 +1600,7 @@ public class wTeacher extends JFrame {
         }
 
         for (Collocation collocation : listDictionaryCopy) {
-            if(collocation.learnedEn == collocation.learnedRu) {
+            if (collocation.learnedEn == collocation.learnedRu) {
                 j++;
             }
             rowBeginIndexOfLearnedWords = j;
@@ -1626,9 +1618,9 @@ public class wTeacher extends JFrame {
         for (Collocation collocation : listOfLearnedWords) {
             countOfLearnedWords++;
 
-            if(j >= rowBeginIndexOfLearnedWords + numberOfBlocks * numberOfCollocationsInABlock){
+            if (j >= rowBeginIndexOfLearnedWords + numberOfBlocks * numberOfCollocationsInABlock) {
                 listOfWellLearnedWords.add(collocation);
-            }else {
+            } else {
                 listDictionaryCopy.add(collocation);
                 j++;
                 rowBeginIndexOfWellLearnedWords = j;
@@ -1636,10 +1628,79 @@ public class wTeacher extends JFrame {
         }
         rowBeginIndexOfNativeWords = rowBeginIndexOfWellLearnedWords + numberOfBlocks * numberOfCollocationsInABlock;
 
-        if (rowBeginIndexOfWellLearnedWords == 0){
+        if (rowBeginIndexOfWellLearnedWords == 0) {
             rowBeginIndexOfWellLearnedWords = listDictionaryCopy.size();
         }
 
+    }
+
+    public void startServer(final int port) {
+
+        //start server
+        //Создание потока
+        Thread serverSocketThread = new Thread(new Runnable() {
+            public void run() //Этот метод будет выполняться в побочном потоке
+            {
+                List<Sender> senderList = new ArrayList<Sender>();
+
+                String strLocalSocketAddress = "FAILED";
+
+                try {
+                    serverSocket = new ServerSocket(port, 1, InetAddress.getLocalHost());//new ServerSocket(0);//7373);
+                    portNumber = serverSocket.getLocalPort();
+                    spinnerPortNumber.setValue(portNumber);
+
+                    strLocalSocketAddress = "" + serverSocket.getLocalSocketAddress();
+                    final String finalStrLocalSocketAddress = strLocalSocketAddress;
+
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            wTeacher.this.setTitle(title + " /socket server: " + finalStrLocalSocketAddress);//0.5Keyboard
+                        }
+                    });
+                } catch (IOException e) {
+                    countOfAttemptsToCreateServer++;
+                    if (countOfAttemptsToCreateServer <= NUMBER_OF_ATTEMPTS_TO_CREATE_SERVER) {
+                        startServer(0);
+                    }
+                    e.printStackTrace();
+                }
+                try {
+
+                    while (true) {
+                        System.out.println("the server is start." + " /socket server: " + strLocalSocketAddress);
+
+                        //Port 63343 is open
+
+                        Socket s = serverSocket.accept();
+
+                        String clientAddress = s.getInetAddress().getHostAddress();
+                        System.out.println("\r\nNew connection from " + clientAddress);
+
+                        Sender sndr = new Sender(s);
+                        sndr.start();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println(e);
+                } finally {
+            /*
+            for (Sender sndr : senderList) {
+                sndr.setFinishFlag();
+            }
+            */
+                    try {
+                        serverSocket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+            }
+        });
+        serverSocketThread.start();
     }
 
     class Sender extends Thread {
@@ -1671,8 +1732,8 @@ public class wTeacher extends JFrame {
 
                 boolean swapOnAndroid = in.readBoolean();
                 int countOfLearnedWordsOnAndroid = in.readInt();
-                if ( (countOfLearnedWords < countOfLearnedWordsOnAndroid)
-                        || (countOfLearnedWords == countOfLearnedWordsOnAndroid && swapOnAndroid) ){
+                if ((countOfLearnedWords < countOfLearnedWordsOnAndroid)
+                        || (countOfLearnedWords == countOfLearnedWordsOnAndroid && swapOnAndroid)) {
                     out.writeUTF("unloading");//инструкция для Android
 
                     numberOfBlocks = in.readInt();
@@ -1681,7 +1742,7 @@ public class wTeacher extends JFrame {
                     numberOfCollocationsInABlock = in.readInt();
                     spinnerNumberOfCollocationsInABlock.setValue(numberOfCollocationsInABlock);
 
-                    String jsonStr  = (String) ois.readObject();//listDictionary = (ArrayList<Collocation>) ois.readObject();
+                    String jsonStr = (String) ois.readObject();//listDictionary = (ArrayList<Collocation>) ois.readObject();
 
                     JsonParser parser = new JsonParser();
                     Gson gson = new Gson();
@@ -1701,9 +1762,9 @@ public class wTeacher extends JFrame {
                     }
 
                     defineIndexesOfWords();
-                    progressBar.setValue((int)((double)countOfLearnedWords / listDictionary.size() *  100));
+                    progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
 
-                }else{
+                } else {
                     out.writeUTF("loading");//инструкция для Android
 
                     out.writeInt(numberOfBlocks);
@@ -1723,7 +1784,6 @@ public class wTeacher extends JFrame {
     }
 
 
-
     public class EditorPaneRenderer extends JTextPane implements TableCellRenderer {
 
         private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
@@ -1733,7 +1793,7 @@ public class wTeacher extends JFrame {
         SimpleAttributeSet set = new SimpleAttributeSet();
 
         public EditorPaneRenderer() {
-            setStyledDocument (doc);
+            setStyledDocument(doc);
         }
 
         public Component getTableCellRendererComponent(JTable table,
