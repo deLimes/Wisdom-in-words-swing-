@@ -20,9 +20,6 @@ import java.nio.file.FileSystem;
 import java.nio.file.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Handler;
 import java.util.prefs.Preferences;
 
 
@@ -68,6 +65,8 @@ public class wTeacher extends JFrame {
     final int NUMBER_OF_ATTEMPTS_TO_CREATE_SERVER = 5;
     int countOfAttemptsToCreateServer = 0;
     ServerSocket serverSocket;
+    int selectedRow = 0;
+    String storedTextOfFilter = "";
 
     private boolean EnglishTextLayout = false;
     char[] ArrayEnglishCharacters = {'h', 'j', 'k', 'l', 'y', 'u', 'i', 'o',
@@ -527,8 +526,7 @@ public class wTeacher extends JFrame {
                         }
                     }
 
-                    table.getSelectionModel().setSelectionInterval(j, j);
-                    table.scrollRectToVisible(new Rectangle(table.getCellRect(j, 0, true)));
+                    scrollToRow(j);
 
                 }
             }
@@ -543,8 +541,7 @@ public class wTeacher extends JFrame {
 
                 if (swap) {
                     int j = listDictionary.size() - 1;
-                    table.getSelectionModel().setSelectionInterval(j, j);
-                    table.scrollRectToVisible(new Rectangle(table.getCellRect(j, 0, true)));
+                    scrollToRow(j);
                 } else {
                     int j = 0;
                     for (Collocation i : listDictionary) {
@@ -555,8 +552,7 @@ public class wTeacher extends JFrame {
                     }
                     if (j == listDictionary.size()) j = 0;
 
-                    table.getSelectionModel().setSelectionInterval(j, j);
-                    table.scrollRectToVisible(new Rectangle(table.getCellRect(j, 0, true)));
+                    scrollToRow(j);
                 }
             }
         });
@@ -1037,7 +1033,17 @@ public class wTeacher extends JFrame {
                 super.keyReleased(e);
 
                 filterChanged = true;
-                setRowFilter(jtfFilterValue.getText());
+                if(storedTextOfFilter.isEmpty()){
+                    selectedRow = table.getSelectedRow();
+                }
+
+                String text = jtfFilterValue.getText();
+                setRowFilter(text);
+
+                if (text.isEmpty()){
+                    scrollToRow(selectedRow);
+                }
+                storedTextOfFilter = text;
             }
         });
 
@@ -1209,9 +1215,8 @@ public class wTeacher extends JFrame {
             }
         });
 
-        int selectedRow = prefs.getInt("selectedRow", 0);
-        table.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
-        table.scrollRectToVisible(new Rectangle(table.getCellRect(selectedRow, 0, true)));
+        selectedRow = prefs.getInt("selectedRow", 0);
+        scrollToRow(selectedRow);
 
 
         final JButton btnSwap = new JButton("Swap");
@@ -1650,14 +1655,25 @@ public class wTeacher extends JFrame {
                     portNumber = serverSocket.getLocalPort();
                     spinnerPortNumber.setValue(portNumber);
 
-                    strLocalSocketAddress = "" + serverSocket.getLocalSocketAddress();
-                    final String finalStrLocalSocketAddress = strLocalSocketAddress;
+                    final DatagramSocket datagramSocket = new DatagramSocket();
+                    try{
+                        datagramSocket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+                        String ip = datagramSocket.getLocalAddress().getHostAddress();
+                        strLocalSocketAddress = ip +":"+ serverSocket.getLocalPort();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
 
+                    final String finalStrLocalSocketAddress = strLocalSocketAddress;
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             wTeacher.this.setTitle(title + " /socket server: " + finalStrLocalSocketAddress);//0.5Keyboard
+                            System.out.println(finalStrLocalSocketAddress);
                         }
                     });
+
+
+
                 } catch (IOException e) {
                     countOfAttemptsToCreateServer++;
                     if (countOfAttemptsToCreateServer <= NUMBER_OF_ATTEMPTS_TO_CREATE_SERVER) {
@@ -1669,8 +1685,6 @@ public class wTeacher extends JFrame {
 
                     while (true) {
                         System.out.println("the server is start." + " /socket server: " + strLocalSocketAddress);
-
-                        //Port 63343 is open
 
                         Socket s = serverSocket.accept();
 
@@ -1701,6 +1715,20 @@ public class wTeacher extends JFrame {
             }
         });
         serverSocketThread.start();
+    }
+
+    public void scrollToRow(final int rowIndex){
+
+        table.getSelectionModel().setSelectionInterval(rowIndex, rowIndex);
+        table.scrollRectToVisible(new Rectangle(table.getCellRect(rowIndex, 0, true)));
+
+        //не работает с первого разаа
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                table.scrollRectToVisible(new Rectangle(table.getCellRect(rowIndex, 0, true)));
+            }
+        });
+        
     }
 
     class Sender extends Thread {
@@ -2033,6 +2061,5 @@ public class wTeacher extends JFrame {
         }
 
     }
-
 
 }
