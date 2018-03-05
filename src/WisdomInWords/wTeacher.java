@@ -59,7 +59,6 @@ public class wTeacher extends JFrame {
     JButton btnStartStop;
     TimerLabel timerLabel;
     TimerLabel differenceTimeLabel;
-    boolean timerStarted;
     long timeOfLastMeasurement = 0;
     boolean swap = false;
     final int NUMBER_OF_ATTEMPTS_TO_CREATE_SERVER = 5;
@@ -68,6 +67,8 @@ public class wTeacher extends JFrame {
     int selectedRow = 0;
     int selectedRowForTimer = -1;//set value only if(!timerLabel.isTimerRunning)
     String storedTextOfFilter = "";
+    boolean storedValueHotStartStop;
+
 
     private boolean EnglishTextLayout = false;
     char[] ArrayEnglishCharacters = {'h', 'j', 'k', 'l', 'y', 'u', 'i', 'o',
@@ -426,7 +427,7 @@ public class wTeacher extends JFrame {
 
 
                             if (indexOfTheSelectedRow == selectedRowForTimer) {
-                                startStopTimer(true, false);
+                                startStopTimer(true, true);
                             }
                         } else {
                             dtm.setValueAt(resultText,
@@ -434,7 +435,7 @@ public class wTeacher extends JFrame {
                                     indexConvertOfTheSelectedColumn);
 
                             if (indexOfTheSelectedRow == selectedRowForTimer) {
-                                startStopTimer(true, false);
+                                startStopTimer(true, true);
                             }
                         }
 
@@ -1355,10 +1356,24 @@ public class wTeacher extends JFrame {
 
     private void startStopTimer(boolean showDifference, boolean hotStartStop){
 
+        boolean timerStarted = timerLabel.isTimerRunning();
+
+        if (timerStarted && hotStartStop && storedValueHotStartStop != hotStartStop){
+            return;
+        }
+
+        //чтобы при ошибке ввода не запускался таймер
+        if (!showDifference && hotStartStop && !timerStarted){
+            return;
+        }
+
+        if (storedValueHotStartStop != hotStartStop){
+            showDifference = false;
+        }
+
         if (timerStarted) {
 
             timerLabel.stopTimer();
-            timerStarted = false;
             btnStartStop.setText("Start");
 
             if (showDifference) {
@@ -1372,17 +1387,17 @@ public class wTeacher extends JFrame {
 
                 timeOfLastMeasurement = timerLabel.getTime();
                 differenceTimeLabel.setStringTime(StringUtils.timeToString(differenceTime));
-            }else{
+            } else {
                 differenceTimeLabel.setTimeColor(Color.RED);
                 differenceTimeLabel.setStringTime(StringUtils.timeToString(timerLabel.getTime()));
             }
 
-        } else if(!hotStartStop){
+        } else {
             timerLabel.startTimer();
-            timerStarted = true;
             btnStartStop.setText("Stop");
         }
 
+        storedValueHotStartStop = hotStartStop;
 
     }
 
