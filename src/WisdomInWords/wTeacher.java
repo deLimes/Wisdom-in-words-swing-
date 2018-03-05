@@ -37,7 +37,7 @@ public class wTeacher extends JFrame {
     boolean answersAreHidden;
     boolean tableChanged, rowChanged, columnChanged, filterChanged;
     String original, answer;
-    int previousRow, previousColumn;
+    int keyPreviousRow, previousRow, previousColumn;
     JScrollPane scrollPane;
     JPanel contentPane = new JPanel();
     JButton btnrBack;
@@ -66,6 +66,7 @@ public class wTeacher extends JFrame {
     int countOfAttemptsToCreateServer = 0;
     ServerSocket serverSocket;
     int selectedRow = 0;
+    int selectedRowForTimer = -1;//set value only if(!timerLabel.isTimerRunning)
     String storedTextOfFilter = "";
 
     private boolean EnglishTextLayout = false;
@@ -385,6 +386,10 @@ public class wTeacher extends JFrame {
                         }
                         progressBar.setValue((int) (((double) i / numberOfCollocationsInABlock) * 100));
 
+                        if (!timerLabel.isTimerRunning()) {
+                            selectedRowForTimer = indexOfTheSelectedRow;
+                        }
+
                     }
 
 
@@ -418,10 +423,19 @@ public class wTeacher extends JFrame {
                             dtm.setValueAt("",
                                     table.getSelectedRow(),
                                     indexConvertOfTheSelectedColumn);
+
+
+                            if (indexOfTheSelectedRow == selectedRowForTimer) {
+                                startStopTimer(true, false);
+                            }
                         } else {
                             dtm.setValueAt(resultText,
                                     table.getSelectedRow(),
                                     indexConvertOfTheSelectedColumn);
+
+                            if (indexOfTheSelectedRow == selectedRowForTimer) {
+                                startStopTimer(true, false);
+                            }
                         }
 
                         if (!englishLeft) {
@@ -434,11 +448,7 @@ public class wTeacher extends JFrame {
                             resultText = original + "⚓";
                             listDictionary.get(indexOfTheSelectedRow).isDifficult = true;
 
-                            timerLabel.stopTimer();
-                            timerStarted = false;
-                            btnStartStop.setText("Start");
-                            differenceTimeLabel.setTimeColor(Color.RED);
-                            differenceTimeLabel.setStringTime(StringUtils.timeToString(timerLabel.getTime()));
+                            startStopTimer(false, true);
                         }
                         if (answersAreHidden) {
                             dtm.setValueAt("",
@@ -512,18 +522,17 @@ public class wTeacher extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (swap) {
 
-                    table.setRowSelectionInterval(0, 0);
-                    scrollPane.getViewport().setViewPosition(new Point(0, 0));
+                    scrollToRow(0);
 
                 } else {
 
                     int i = 0;
                     int j = 0;
                     for (Collocation colloc : listDictionary) {
-                        i++;
                         if (colloc.learnedEn != colloc.learnedRu) {
-                            j = i;
+                            j = i + 1;
                         }
+                        i++;
                     }
 
                     scrollToRow(j);
@@ -1190,27 +1199,8 @@ public class wTeacher extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if (timerStarted) {
-                    timerLabel.stopTimer();
-                    timerStarted = false;
-                    btnStartStop.setText("Start");
-
-                    long differenceTime = timerLabel.getTime() - timeOfLastMeasurement;
-                    if (differenceTime < 0) {
-                        differenceTimeLabel.setTimeColor(new Color(0, 128, 0));
-                        differenceTime *= -1;
-                    } else {
-                        differenceTimeLabel.setTimeColor(Color.RED);
-                    }
-
-                    timeOfLastMeasurement = timerLabel.getTime();
-
-                    differenceTimeLabel.setStringTime(StringUtils.timeToString(differenceTime));
-                } else {
-                    timerLabel.startTimer();
-                    timerStarted = true;
-                    btnStartStop.setText("Stop");
-                }
+                selectedRowForTimer = -1;
+                startStopTimer(true, false);
 
             }
         });
@@ -1234,6 +1224,70 @@ public class wTeacher extends JFrame {
 
             }
         });
+
+        table.addKeyListener(new KeyAdapter() {
+
+            /**
+             * Invoked when a key has been pressed.
+             *
+             * @param e
+             */
+            @Override
+            public void keyPressed(KeyEvent e) {
+                super.keyPressed(e);
+
+                if (e.getKeyCode() == KeyEvent.VK_UP ||
+                        e.getKeyCode() == KeyEvent.VK_DOWN) {
+
+                    keyPreviousRow = table.getSelectedRow();
+                }
+
+
+            }
+
+            /**
+             * Invoked when a key has been released.
+             *
+             * @param e
+             */
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+
+                if (e.getKeyCode() == KeyEvent.VK_UP) {
+
+                    if ( table.getSelectedRow() == 0 && keyPreviousRow == 0) {
+                        int i = 0;
+                        int j = listDictionary.size() - 1;
+                        for (Collocation colloc : listDictionary) {
+                            if (colloc.learnedEn != colloc.learnedRu) {
+                                j = i;
+                            }
+                            i++;
+                        }
+
+                        scrollToRow(j);
+
+
+                        if (!timerLabel.isTimerRunning()) {
+                            selectedRowForTimer = j;
+                        }
+
+                    }
+
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+
+                    if (table.getSelectedRow() == listDictionary.size() - 1) {
+                        scrollToRow(0);
+                    }
+                }
+
+
+
+            }
+
+    });
+
 
         startServer(portNumber);
 
@@ -1296,6 +1350,39 @@ public class wTeacher extends JFrame {
         panel.add(spinnerNumberOfBlocks);
         panel.add(labelNumberOfCollocationsInABlock);
         panel.add(spinnerNumberOfCollocationsInABlock);
+
+    }
+
+    private void startStopTimer(boolean showDifference, boolean hotStartStop){
+
+        if (timerStarted) {
+
+            timerLabel.stopTimer();
+            timerStarted = false;
+            btnStartStop.setText("Start");
+
+            if (showDifference) {
+                long differenceTime = timerLabel.getTime() - timeOfLastMeasurement;
+                if (differenceTime < 0) {
+                    differenceTimeLabel.setTimeColor(new Color(0, 128, 0));
+                    differenceTime *= -1;
+                } else {
+                    differenceTimeLabel.setTimeColor(Color.RED);
+                }
+
+                timeOfLastMeasurement = timerLabel.getTime();
+                differenceTimeLabel.setStringTime(StringUtils.timeToString(differenceTime));
+            }else{
+                differenceTimeLabel.setTimeColor(Color.RED);
+                differenceTimeLabel.setStringTime(StringUtils.timeToString(timerLabel.getTime()));
+            }
+
+        } else if(!hotStartStop){
+            timerLabel.startTimer();
+            timerStarted = true;
+            btnStartStop.setText("Stop");
+        }
+
 
     }
 
@@ -1728,7 +1815,7 @@ public class wTeacher extends JFrame {
                 table.scrollRectToVisible(new Rectangle(table.getCellRect(rowIndex, 0, true)));
             }
         });
-        
+
     }
 
     class Sender extends Thread {
@@ -2061,5 +2148,7 @@ public class wTeacher extends JFrame {
         }
 
     }
+
+
 
 }
