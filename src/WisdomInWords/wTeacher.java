@@ -1402,6 +1402,18 @@ public class wTeacher extends JFrame {
                 differenceTimeLabel.setStringTime(StringUtils.timeToString(timerLabel.getTime()));
             }
 
+            int i = 0;
+            int j = 0;
+            for (Collocation colloc : listDictionary) {
+                if (colloc.learnedEn != colloc.learnedRu) {
+                    j = i;
+                }
+                i++;
+            }
+
+            if (!timerLabel.isTimerRunning()) {
+                selectedRowForTimer = j;
+            }
         } else {
             timerLabel.startTimer();
             btnStartStop.setText("Stop");
