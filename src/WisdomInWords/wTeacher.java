@@ -108,13 +108,11 @@ public class wTeacher extends JFrame {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-                prefs.putInt("fontSize", fontSize);
-                prefs.putInt("portNumber", portNumber);
-                prefs.putInt("selectedRow", table.getSelectedRow());
-                prefs.putInt("countOfLearnedWords", countOfLearnedWords);
 
-                saveListDictionary();
+                if(!swap){
+                    save();
+                }
+
             }
         });
     }
@@ -1002,7 +1000,7 @@ public class wTeacher extends JFrame {
         });
 
         portNumber = prefs.getInt("portNumber", portNumber);
-        JLabel labelPortNumber = new JLabel("Port number");
+        JLabel labelPortNumber = new JLabel("Port");
         spinnerPortNumber = new JSpinner(new SpinnerNumberModel(portNumber, 1, 65535, 1));
         spinnerPortNumber.setToolTipText("Server port number");
 
@@ -1290,6 +1288,17 @@ public class wTeacher extends JFrame {
     });
 
 
+        JButton btnSave = new JButton("Save");
+        // Слушатель обработки события
+        btnSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                save();
+
+            }
+        });
+
         startServer(portNumber);
 
         JButton btnTest = new JButton("Test");
@@ -1327,6 +1336,7 @@ public class wTeacher extends JFrame {
 
         //panel.add(btnTest);
 
+        panel.add(btnSave);
         panel.add(labelPortNumber);
         panel.add(spinnerPortNumber);
         panel.add(progressBar);
@@ -1831,6 +1841,17 @@ public class wTeacher extends JFrame {
             }
         });
 
+    }
+
+    public void save(){
+
+        Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
+        prefs.putInt("fontSize", fontSize);
+        prefs.putInt("portNumber", portNumber);
+        prefs.putInt("selectedRow", table.getSelectedRow());
+        prefs.putInt("countOfLearnedWords", countOfLearnedWords);
+
+        saveListDictionary();
     }
 
     class Sender extends Thread {
