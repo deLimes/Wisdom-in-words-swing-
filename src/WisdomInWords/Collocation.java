@@ -13,11 +13,11 @@ public class Collocation implements Serializable {
     public String ru;
     public boolean isDifficult;
 
-    public Collocation(boolean learnedEn, String en, boolean learnedRu, String ru) {
+    public Collocation(boolean learnedEn, String en, boolean learnedRu, String ru, boolean isDifficult) {
         this.learnedEn = learnedEn;
         this.en = en;
         this.learnedRu = learnedRu;
         this.ru = ru;
-        this.isDifficult = false;
+        this.isDifficult = isDifficult;
     }
 }

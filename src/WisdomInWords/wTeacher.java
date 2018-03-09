@@ -45,6 +45,7 @@ public class wTeacher extends JFrame {
     int numberOfBlocks = 1, numberOfCollocationsInABlock = 1, fontSize = 12, portNumber = 7373;
     int rowBeginIndexOfLearnedWords = 0, rowBeginIndexOfWellLearnedWords = 0, rowBeginIndexOfNativeWords = 0;
     int countOfLearnedWords = 0;
+    int countOfDifficultWords = 0;
     Integer sendersCreated = 0;
     List<Collocation> listDictionary = new ArrayList<Collocation>();
     JTextField jtfFilterValue;
@@ -663,7 +664,7 @@ public class wTeacher extends JFrame {
                     }
                     rowBeginIndexOfLearnedWords = j;
                 }
-                int countOfDifficultWords = 0;
+                countOfDifficultWords = 0;
                 for (Collocation collocation : listOfDifficultWords) {
                     countOfDifficultWords++;
 
@@ -792,7 +793,7 @@ public class wTeacher extends JFrame {
                     }
                     rowBeginIndexOfLearnedWords = j;
                 }
-                int countOfDifficultWords = 0;
+                countOfDifficultWords = 0;
                 for (Collocation collocation : listOfDifficultWords) {
                     countOfDifficultWords++;
                     listDictionary.add(collocation);
@@ -1069,7 +1070,7 @@ public class wTeacher extends JFrame {
                         showMessageDialog(MASSAGE_WRONG_FORMAT);
                         return;
                     }
-                    Collocation collocation = new Collocation(false, collocationParts[0].trim(), false, collocationParts[1].trim());
+                    Collocation collocation = new Collocation(false, collocationParts[0].trim(), false, collocationParts[1].trim(), false);
                     Character Symbol = collocation.en.charAt(0);
                     boolean EnglishLayout = false;//engList.indexOf(Symbol) != -1;
                     boolean RussianLayout = false;//rusList.indexOf(Symbol) != -1;
@@ -1528,7 +1529,9 @@ public class wTeacher extends JFrame {
                 Collocation collocation = listDictionary.get(i);
                 if (collocation.learnedEn && collocation.learnedRu) {
                     // пишем данные
-                    bw.write(collocation.en + "\r\n");
+                    bw.write(collocation.en
+                            .replace("✓", "")
+                            .replace("⚓", "") + "\r\n");
                 }
             }
             // закрываем поток
@@ -1555,7 +1558,9 @@ public class wTeacher extends JFrame {
                 Collocation collocation = listDictionary.get(i);
                 if (collocation.learnedEn && collocation.learnedRu) {
                     // пишем данные
-                    bw.write(collocation.ru + "\r\n");
+                    bw.write(collocation.ru
+                            .replace("✓", "")
+                            .replace("⋆", "") + "\r\n");
                 }
             }
             // закрываем поток
@@ -1707,7 +1712,7 @@ public class wTeacher extends JFrame {
 
         listDictionary.clear();
         for (int i = 0; i < lines.size(); i += 2) {
-            listDictionary.add(new Collocation(false, lines.get(i), false, lines.get(i + 1)));
+            listDictionary.add(new Collocation(false, lines.get(i), false, lines.get(i + 1), false));
         }
 
         table.clearSelection();
@@ -1745,7 +1750,8 @@ public class wTeacher extends JFrame {
                     collocation.learnedEn,
                     collocation.en,
                     collocation.learnedRu,
-                    collocation.ru
+                    collocation.ru,
+                    collocation.isDifficult
             ));
         }
 
@@ -1793,7 +1799,7 @@ public class wTeacher extends JFrame {
             rowBeginIndexOfLearnedWords = j;
         }
 
-        int countOfDifficultWords = 0;
+        countOfDifficultWords = 0;
         for (Collocation collocation : listOfDifficultWords) {
             countOfDifficultWords++;
             listDictionaryCopy.add(collocation);
@@ -1985,6 +1991,18 @@ public class wTeacher extends JFrame {
 
                     defineIndexesOfWords();
                     progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
+
+                    labelNumberOfLearnedWords.setText("learned: " + Integer.toString(countOfLearnedWords));
+                    labelNumberOfDifficultWords.setText("difficult: " + Integer.toString(countOfDifficultWords));
+                    labelNumberOfWordsLeft.setText("left: " + Integer.toString(listDictionary.size() - countOfLearnedWords));
+                    labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
+
+                    Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
+                    prefs.putInt("countOfLearnedWords", countOfLearnedWords);
+                    prefs.putInt("countOfDifficultWords", countOfDifficultWords);
+                    prefs.putInt("countOfLeftWords", listDictionary.size() - countOfLearnedWords);
+                    prefs.putInt("countOfTotalWords", listDictionary.size());
+
 
                 } else {
                     out.writeUTF("loading");//инструкция для Android
