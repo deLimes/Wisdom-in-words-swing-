@@ -1507,6 +1507,64 @@ public class wTeacher extends JFrame {
 
     }
 
+    private void saveWordsForKeyboardSimulator() {
+
+        final File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
+        //En
+        File fileLearnedWordsEn = new File(sysTempDir, "learnedWordsEn.txt");
+        if (!fileLearnedWordsEn.exists()) {
+            try {
+                fileLearnedWordsEn.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            // открываем поток для записи
+            Writer bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileLearnedWordsEn), "UTF-8"));//"UTF-8"));
+
+            for (int i = 0; i < listDictionary.size(); i++) {
+                Collocation collocation = listDictionary.get(i);
+                if (collocation.learnedEn && collocation.learnedRu) {
+                    // пишем данные
+                    bw.write(collocation.en + "\r\n");
+                }
+            }
+            // закрываем поток
+            bw.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        //Ru
+        File fileLearnedWordsRu = new File(sysTempDir, "learnedWordsRu.txt");
+        if (!fileLearnedWordsRu.exists()) {
+            try {
+                fileLearnedWordsRu.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            // открываем поток для записи
+            Writer bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileLearnedWordsRu), "UTF-8"));//"UTF-8"));
+
+            for (int i = 0; i < listDictionary.size(); i++) {
+                Collocation collocation = listDictionary.get(i);
+                if (collocation.learnedEn && collocation.learnedRu) {
+                    // пишем данные
+                    bw.write(collocation.ru + "\r\n");
+                }
+            }
+            // закрываем поток
+            bw.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
     private void saveListDictionary() {
 
         String jsonStr = new Gson().toJson(listDictionary);
@@ -1864,6 +1922,7 @@ public class wTeacher extends JFrame {
         prefs.putInt("countOfLearnedWords", countOfLearnedWords);
 
         saveListDictionary();
+        saveWordsForKeyboardSimulator();
     }
 
     class Sender extends Thread {
