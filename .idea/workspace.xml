@@ -33,11 +33,10 @@
       <file leaf-file-name="wTeacher.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-52.372284" vertical-offset="36273" max-vertical-offset="36856">
-              <caret line="1072" column="137" selection-start-line="1072" selection-start-column="137" selection-end-line="1072" selection-end-column="137" />
+            <state vertical-scroll-proportion="-6.298913" vertical-offset="28498" max-vertical-offset="36788">
+              <caret line="1632" column="9" selection-start-line="1632" selection-start-column="9" selection-end-line="1632" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#64926#64939#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -94,8 +93,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -212,6 +209,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -461,7 +460,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="92" y="-8" width="1282" height="784" extended-state="6" />
+    <frame x="92" y="-8" width="1282" height="784" extended-state="7" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -474,7 +473,7 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297546" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3297546" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24959083" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -511,49 +510,49 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1895</line>
+          <line>1891</line>
           <properties />
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1377</line>
+          <line>1374</line>
           <properties />
           <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1372</line>
+          <line>1369</line>
           <properties />
           <option name="timeStamp" value="45" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>450</line>
+          <line>447</line>
           <properties />
           <option name="timeStamp" value="46" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1991</line>
+          <line>1987</line>
           <properties />
           <option name="timeStamp" value="47" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1802</line>
+          <line>1798</line>
           <properties />
           <option name="timeStamp" value="48" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1773</line>
+          <line>1769</line>
           <properties />
           <option name="timeStamp" value="51" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1771</line>
+          <line>1767</line>
           <properties />
           <option name="timeStamp" value="52" />
         </line-breakpoint>
@@ -573,11 +572,28 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="38505">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/WisdomInWords/Collocation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="129" max-vertical-offset="493">
+          <caret line="20" column="38" selection-start-line="20" selection-start-column="38" selection-end-line="20" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="38199">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#64926#64939#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -588,7 +604,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#64926#64939#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -599,7 +614,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#64926#64939#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -610,7 +624,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#64926#64939#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -621,7 +634,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#64926#64939#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -632,7 +644,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#64926#64939#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -651,7 +662,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#64926#64939#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -670,7 +680,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#64926#64939#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -689,7 +698,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#64926#64939#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -708,7 +716,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#64926#64939#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -727,7 +734,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#64926#64939#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -791,11 +797,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-52.372284" vertical-offset="36273" max-vertical-offset="36856">
-          <caret line="1072" column="137" selection-start-line="1072" selection-start-column="137" selection-end-line="1072" selection-end-column="137" />
+        <state vertical-scroll-proportion="-6.298913" vertical-offset="28498" max-vertical-offset="36788">
+          <caret line="1632" column="9" selection-start-line="1632" selection-start-column="9" selection-end-line="1632" selection-end-column="9" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#64926#64939#0" expanded="true" />
           </folding>
         </state>
       </provider>

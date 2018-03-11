@@ -397,8 +397,7 @@ public class wTeacher extends JFrame {
 
                     String content = v.toString();
                     if (rowChanged || columnChanged || hideAnswers || showAnswers
-                            || content.isEmpty() || content.contains("✓")
-                            || content.contains("⚓") || content.contains("⋆")) {
+                            || content.isEmpty() || content.contains("✓") || content.contains("⚓") ) {
 
                         rowChanged = columnChanged = false;
                         return;
@@ -406,9 +405,7 @@ public class wTeacher extends JFrame {
 
                     //get the index editable word
                     if (englishLeft) {
-                        original = listDictionary.get(indexOfTheSelectedRow).ru
-                                .replace("✓", "")
-                                .replace("⋆", "");
+                        original = listDictionary.get(indexOfTheSelectedRow).ru;
                     } else {
                         original = listDictionary.get(indexOfTheSelectedRow).en
                                 .replace("✓", "")
@@ -443,7 +440,7 @@ public class wTeacher extends JFrame {
                         }
                     } else {
                         if (englishLeft) {
-                            resultText = original + "⋆";
+                            resultText = original;
                         } else {
                             resultText = original + "⚓";
                             listDictionary.get(indexOfTheSelectedRow).isDifficult = true;
@@ -875,7 +872,7 @@ public class wTeacher extends JFrame {
                         }
 
                         String content = v.toString();
-                        content = content.replace("✓", "").replace("⋆", "").replace("⚓", "");
+                        content = content.replace("✓", "").replace("⚓", "");
 
                         getContentPane().remove(0);
                         getContentPane().add(btnrBack, BorderLayout.PAGE_START);
@@ -1558,9 +1555,7 @@ public class wTeacher extends JFrame {
                 Collocation collocation = listDictionary.get(i);
                 if (collocation.learnedEn && collocation.learnedRu) {
                     // пишем данные
-                    bw.write(collocation.ru
-                            .replace("✓", "")
-                            .replace("⋆", "") + "\r\n");
+                    bw.write(collocation.ru + "\r\n");
                 }
             }
             // закрываем поток
@@ -1568,6 +1563,7 @@ public class wTeacher extends JFrame {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+
 
     }
     private void saveListDictionary() {
