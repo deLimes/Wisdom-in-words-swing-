@@ -57,7 +57,7 @@ public class wTeacher extends JFrame {
     JLabel labelNumberOfWordsLeft = new JLabel("");
     JLabel labelNumberOfWordsTotal = new JLabel("");
     JSpinner spinnerNumberOfBlocks, spinnerNumberOfCollocationsInABlock, spinnerFontSize, spinnerPortNumber;
-    JButton btnStartStop;
+    JButton btnStartStop, btnSwap;
     TimerLabel timerLabel;
     TimerLabel differenceTimeLabel;
     long timeOfLastMeasurement = 0;
@@ -521,6 +521,8 @@ public class wTeacher extends JFrame {
 
                     scrollToRow(0);
 
+                    swap = false;
+                    btnSwap.setBackground(btnHide.getBackground());
                 } else {
 
                     int i = 0;
@@ -548,6 +550,9 @@ public class wTeacher extends JFrame {
                 if (swap) {
                     int j = listDictionary.size() - 1;
                     scrollToRow(j);
+
+                    swap = false;
+                    btnSwap.setBackground(btnHide.getBackground());
                 } else {
                     int j = 0;
                     for (Collocation i : listDictionary) {
@@ -605,6 +610,7 @@ public class wTeacher extends JFrame {
                 };
 
                 List<Collocation> listOfStudiedWords = new ArrayList<Collocation>();
+                List<Collocation> listOfFavoriteWords = new ArrayList<Collocation>();
                 List<Collocation> listOfDifficultWords = new ArrayList<Collocation>();
                 List<Collocation> listOfLearnedWords = new ArrayList<Collocation>();
 
@@ -613,7 +619,11 @@ public class wTeacher extends JFrame {
                     Collocation collocation = listDictionary.get(i);
 
                     if (collocation.learnedEn != collocation.learnedRu) {
-                        listOfStudiedWords.add(collocation);
+                        if(collocation.isDifficult && swap){
+                            listOfFavoriteWords.add(collocation);
+                        }else {
+                            listOfStudiedWords.add(collocation);
+                        }
                         listDictionary.remove(i);
                         i--;
                         continue;
@@ -633,6 +643,7 @@ public class wTeacher extends JFrame {
                 }
 
                 Collections.sort(listOfStudiedWords, enRuComparator);
+                Collections.sort(listOfFavoriteWords, enRuComparator);
                 Collections.sort(listOfDifficultWords, enRuComparator);
                 Collections.sort(listDictionary, enRuComparator);
 
@@ -640,6 +651,16 @@ public class wTeacher extends JFrame {
                 dtm.getDataVector().clear();
 
                 int j = 0;
+                for (Collocation collocation : listOfFavoriteWords) {
+                    listDictionary.add(j, collocation);
+                    dtm.addRow(new Object[0]);
+                    dtm.setValueAt(collocation.learnedEn, j, 0);
+                    dtm.setValueAt(collocation.en, j, 1);
+                    dtm.setValueAt(collocation.learnedRu, j, 2);
+                    dtm.setValueAt(collocation.ru, j, 3);
+                    j++;
+                    rowBeginIndexOfLearnedWords = j;
+                }
                 for (Collocation collocation : listOfStudiedWords) {
                     listDictionary.add(j, collocation);
                     dtm.addRow(new Object[0]);
@@ -721,6 +742,9 @@ public class wTeacher extends JFrame {
                     hideAnswers();
                 }
 
+                swap = false;
+                btnSwap.setBackground(btnHide.getBackground());
+
             }
 
         });
@@ -733,6 +757,7 @@ public class wTeacher extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 List<Collocation> listOfStudiedWords = new ArrayList<Collocation>();
+                List<Collocation> listOfFavoriteWords = new ArrayList<Collocation>();
                 List<Collocation> listOfDifficultWords = new ArrayList<Collocation>();
                 List<Collocation> listOfLearnedWords = new ArrayList<Collocation>();
 
@@ -741,7 +766,11 @@ public class wTeacher extends JFrame {
                     Collocation collocation = listDictionary.get(i);
 
                     if (collocation.learnedEn != collocation.learnedRu) {
-                        listOfStudiedWords.add(collocation);
+                        if(collocation.isDifficult && swap){
+                            listOfFavoriteWords.add(collocation);
+                        }else {
+                            listOfStudiedWords.add(collocation);
+                        }
                         listDictionary.remove(i);
                         i--;
                         continue;
@@ -762,12 +791,24 @@ public class wTeacher extends JFrame {
                 }
 
                 Collections.shuffle(listOfStudiedWords);
+                Collections.shuffle(listOfFavoriteWords);
                 Collections.shuffle(listDictionary);
 
                 table.clearSelection();
                 dtm.getDataVector().clear();
 
                 int j = 0;
+                for (Collocation collocation : listOfFavoriteWords) {
+                    listDictionary.add(j, collocation);
+                    dtm.addRow(new Object[0]);
+                    dtm.setValueAt(collocation.learnedEn, j, 0);
+                    dtm.setValueAt(collocation.en, j, 1);
+                    dtm.setValueAt(collocation.learnedRu, j, 2);
+                    dtm.setValueAt(collocation.ru, j, 3);
+                    j++;
+                    rowBeginIndexOfLearnedWords = j;
+                }
+
                 for (Collocation collocation : listOfStudiedWords) {
                     listDictionary.add(j, collocation);
                     dtm.addRow(new Object[0]);
@@ -849,6 +890,9 @@ public class wTeacher extends JFrame {
                 if (answersWereHidden) {
                     hideAnswers();
                 }
+
+                swap = false;
+                btnSwap.setBackground(btnHide.getBackground());
 
             }
 
@@ -1206,7 +1250,7 @@ public class wTeacher extends JFrame {
         scrollToRow(selectedRow);
 
 
-        final JButton btnSwap = new JButton("Swap");
+        btnSwap = new JButton("Swap");
         // Слушатель обработки события
         btnSwap.addActionListener(new ActionListener() {
             @Override
@@ -1507,9 +1551,20 @@ public class wTeacher extends JFrame {
 
     private void saveWordsForKeyboardSimulator() {
 
-        final File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
+        //final File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
+        //String currentRootDirectoryPath = getClass().getResource("").getPath();;
+        String currentRootDirectoryPath = wTeacher.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String decodedPath = null;
+        try {
+            decodedPath = URLDecoder.decode(currentRootDirectoryPath, "UTF-8");
+            File currentJavaJarFile = new File(currentRootDirectoryPath);
+            String fileName = URLDecoder.decode(currentJavaJarFile.getName(), "UTF-8");
+            decodedPath = decodedPath.replace(fileName, "");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         //En
-        File fileLearnedWordsEn = new File(sysTempDir, "learnedWordsEn.txt");
+        File fileLearnedWordsEn = new File(decodedPath, "learnedWordsEn.txt");
         if (!fileLearnedWordsEn.exists()) {
             try {
                 fileLearnedWordsEn.createNewFile();
@@ -1538,7 +1593,7 @@ public class wTeacher extends JFrame {
         }
 
         //Ru
-        File fileLearnedWordsRu = new File(sysTempDir, "learnedWordsRu.txt");
+        File fileLearnedWordsRu = new File(decodedPath, "learnedWordsRu.txt");
         if (!fileLearnedWordsRu.exists()) {
             try {
                 fileLearnedWordsRu.createNewFile();
@@ -1569,8 +1624,20 @@ public class wTeacher extends JFrame {
     private void saveListDictionary() {
 
         String jsonStr = new Gson().toJson(listDictionary);
-        final File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
-        File file = new File(sysTempDir, "savedListDictionary");
+
+        //final File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
+        //String currentRootDirectoryPath = getClass().getResource("").getPath();;
+        String currentRootDirectoryPath = wTeacher.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String decodedPath = null;
+        try {
+            decodedPath = URLDecoder.decode(currentRootDirectoryPath, "UTF-8");
+            File currentJavaJarFile = new File(currentRootDirectoryPath);
+            String fileName = URLDecoder.decode(currentJavaJarFile.getName(), "UTF-8");
+            decodedPath = decodedPath.replace(fileName, "");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        File file = new File(decodedPath, "savedListDictionary");
 
         try {
             // открываем поток для записи
@@ -1590,8 +1657,22 @@ public class wTeacher extends JFrame {
 
         Path filePath;
 
-        final File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
-        File file = new File(sysTempDir, "savedListDictionary");
+        //final File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
+        //File file = new File(sysTempDir, "savedListDictionary");
+
+        //String currentRootDirectoryPath = getClass().getResource("").getPath();
+        String currentRootDirectoryPath = wTeacher.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String decodedPath = null;
+        try {
+            decodedPath = URLDecoder.decode(currentRootDirectoryPath, "UTF-8");
+            File currentJavaJarFile = new File(currentRootDirectoryPath);
+            String fileName = URLDecoder.decode(currentJavaJarFile.getName(), "UTF-8");
+            decodedPath = decodedPath.replace(fileName, "");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        File file = new File(decodedPath, "savedListDictionary");
+
         if (!file.exists()) {
             try {
                 file.createNewFile();

@@ -33,8 +33,8 @@
       <file leaf-file-name="wTeacher.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.298913" vertical-offset="28498" max-vertical-offset="36788">
-              <caret line="1632" column="9" selection-start-line="1632" selection-start-column="9" selection-end-line="1632" selection-end-column="9" />
+            <state vertical-scroll-proportion="0.29076087" vertical-offset="26532" max-vertical-offset="38165">
+              <caret line="1659" column="31" selection-start-line="1659" selection-start-column="21" selection-end-line="1659" selection-end-column="31" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -93,6 +93,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -209,8 +211,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -348,7 +348,9 @@
     <configuration default="true" type="JarApplication" factoryName="JAR Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="JAR_PATH" value="$PROJECT_DIR$/out/artifacts/Wisdom_in_words_jar/Wisdom in words.jar" />
+      <option name="WORKING_DIRECTORY" value="D:\Program Files (x86)\Java Programming\IdeaProjects\Wisdom in words" />
       <envs />
+      <module name="Wisdom in words" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -417,8 +419,25 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <list size="1">
+    <configuration default="false" name="Wisdom in words" type="JarApplication" factoryName="JAR Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="JAR_PATH" value="$PROJECT_DIR$/out/artifacts/Wisdom_in_words_jar/Wisdom in words.jar" />
+      <option name="WORKING_DIRECTORY" value="D:\Program Files (x86)\Java Programming\IdeaProjects\Wisdom in words" />
+      <envs />
+      <module name="Wisdom in words" />
+      <RunnerSettings RunnerId="Basic" />
+      <RunnerSettings RunnerId="JarDebug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <ConfigurationWrapper RunnerId="Basic" />
+      <ConfigurationWrapper RunnerId="JarDebug" />
+      <method />
+    </configuration>
+    <list size="2">
       <item index="0" class="java.lang.String" itemvalue="Application.Wisdom in words" />
+      <item index="1" class="java.lang.String" itemvalue="JAR Application.Wisdom in words" />
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
@@ -460,7 +479,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="92" y="-8" width="1282" height="784" extended-state="7" />
+    <frame x="92" y="-8" width="1282" height="784" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -473,10 +492,10 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3297546" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297546" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24959083" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24959083" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -510,54 +529,60 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1891</line>
+          <line>1972</line>
           <properties />
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1374</line>
-          <properties />
-          <option name="timeStamp" value="44" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1369</line>
+          <line>1413</line>
           <properties />
           <option name="timeStamp" value="45" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>447</line>
-          <properties />
-          <option name="timeStamp" value="46" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1987</line>
+          <line>2068</line>
           <properties />
           <option name="timeStamp" value="47" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1798</line>
+          <line>1677</line>
           <properties />
-          <option name="timeStamp" value="48" />
+          <option name="timeStamp" value="55" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1769</line>
+          <line>1675</line>
           <properties />
-          <option name="timeStamp" value="51" />
+          <option name="timeStamp" value="56" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1767</line>
+          <line>1641</line>
           <properties />
-          <option name="timeStamp" value="52" />
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
+          <line>1673</line>
+          <properties />
+          <option name="timeStamp" value="59" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
+          <line>1669</line>
+          <properties />
+          <option name="timeStamp" value="60" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
+          <line>1668</line>
+          <properties />
+          <option name="timeStamp" value="61" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="53" />
+      <option name="time" value="62" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
@@ -570,6 +595,42 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="38437">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/WisdomInWords/Collocation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="129" max-vertical-offset="493">
+          <caret line="20" column="38" selection-start-line="20" selection-start-column="38" selection-end-line="20" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="38437">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/WisdomInWords/Collocation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="129" max-vertical-offset="493">
+          <caret line="20" column="38" selection-start-line="20" selection-start-column="38" selection-end-line="20" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="38505">
@@ -797,8 +858,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.298913" vertical-offset="28498" max-vertical-offset="36788">
-          <caret line="1632" column="9" selection-start-line="1632" selection-start-column="9" selection-end-line="1632" selection-end-column="9" />
+        <state vertical-scroll-proportion="0.29076087" vertical-offset="26532" max-vertical-offset="38165">
+          <caret line="1659" column="31" selection-start-line="1659" selection-start-column="21" selection-end-line="1659" selection-end-column="31" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
