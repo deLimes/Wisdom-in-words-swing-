@@ -67,6 +67,7 @@ public class wTeacher extends JFrame {
     ServerSocket serverSocket;
     int selectedRow = 0;
     int selectedRowForTimer = -1;//set value only if(!timerLabel.isTimerRunning)
+    int indexOfThePreviousSelectedRow = 0;
     String storedTextOfFilter = "";
     boolean storedValueHotStartStop;
 
@@ -173,6 +174,9 @@ public class wTeacher extends JFrame {
                 if ((colIndex == 0 || colIndex == 2) && collocation.learnedEn != collocation.learnedRu) {
                     rComp.setBackground(new Color(0xADFF2F));
                 }
+                if ((colIndex == 0 || colIndex == 2) && rowIndex == indexOfThePreviousSelectedRow) {
+                    rComp.setBackground(new Color(0xE0FFFF));
+                }
                 if ((colIndex == 0 || colIndex == 2) && rowIndex == table.getSelectedRow()) {
                     rComp.setBackground(new Color(0x7B68EE));
                 }
@@ -255,6 +259,9 @@ public class wTeacher extends JFrame {
                 rowChanged = true;
                 if (!filterChanged && previousRow != -1) {
                     dtm.fireTableCellUpdated(previousRow, previousColumn);
+                    if (previousRow != table.getSelectedRow()) {
+                        indexOfThePreviousSelectedRow = previousRow;
+                    };
                 }
                 previousRow = table.getSelectedRow();
 
