@@ -67,7 +67,7 @@ public class wTeacher extends JFrame {
     ServerSocket serverSocket;
     int selectedRow = 0;
     int selectedRowForTimer = -1;//set value only if(!timerLabel.isTimerRunning)
-    int indexOfThePreviousSelectedRow = 0;
+    int indexOfThePreviousSelectedRow = -1, indexOfTheTempPreviousSelectedRow = -1;
     String storedTextOfFilter = "";
     boolean storedValueHotStartStop;
 
@@ -259,9 +259,6 @@ public class wTeacher extends JFrame {
                 rowChanged = true;
                 if (!filterChanged && previousRow != -1) {
                     dtm.fireTableCellUpdated(previousRow, previousColumn);
-                    if (previousRow != table.getSelectedRow()) {
-                        indexOfThePreviousSelectedRow = previousRow;
-                    };
                 }
                 previousRow = table.getSelectedRow();
 
@@ -470,8 +467,11 @@ public class wTeacher extends JFrame {
                         collocation.en = resultText;
                     } else if (indexConvertOfTheSelectedColumn == 3) {
                         collocation.ru = resultText;
-                        ;
                     }
+
+                    indexOfThePreviousSelectedRow = indexOfTheTempPreviousSelectedRow;
+                    indexOfTheTempPreviousSelectedRow = indexOfTheSelectedRow;
+
 
                     tableChanged = true;
                 }
