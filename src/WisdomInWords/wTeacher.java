@@ -175,7 +175,7 @@ public class wTeacher extends JFrame {
                     rComp.setBackground(new Color(0xADFF2F));
                 }
                 if ((colIndex == 0 || colIndex == 2) && rowIndex == indexOfThePreviousSelectedRow) {
-                    rComp.setBackground(new Color(0xE0FFFF));
+                    rComp.setBackground(new Color(0xFFFF00));
                 }
                 if ((colIndex == 0 || colIndex == 2) && rowIndex == table.getSelectedRow()) {
                     rComp.setBackground(new Color(0x7B68EE));

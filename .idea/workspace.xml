@@ -33,12 +33,10 @@
       <file leaf-file-name="wTeacher.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3777174" vertical-offset="7698" max-vertical-offset="38369">
-              <caret line="474" column="0" selection-start-line="474" selection-start-column="0" selection-end-line="474" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.57336956" vertical-offset="2696" max-vertical-offset="38284">
+              <caret line="177" column="58" selection-start-line="177" selection-start-column="58" selection-end-line="177" selection-end-column="58" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#10469#18130#0" expanded="true" />
-                <element signature="e#18129#18130#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -485,7 +483,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="92" y="-8" width="1282" height="784" extended-state="7" />
+    <frame x="92" y="-8" width="1282" height="784" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -498,7 +496,7 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3297546" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297546" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24959083" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -583,8 +581,24 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/WisdomInWords/Collocation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="129" max-vertical-offset="493">
+          <caret line="20" column="38" selection-start-line="20" selection-start-column="38" selection-end-line="20" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="39933">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -603,8 +617,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -623,8 +635,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -643,8 +653,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -663,8 +671,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -683,8 +689,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -695,8 +699,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -707,8 +709,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -719,8 +719,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -731,8 +729,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -743,8 +739,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -763,8 +757,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -783,8 +775,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -803,8 +793,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -823,8 +811,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -843,8 +829,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -908,12 +892,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3777174" vertical-offset="7698" max-vertical-offset="38369">
-          <caret line="474" column="0" selection-start-line="474" selection-start-column="0" selection-end-line="474" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.57336956" vertical-offset="2696" max-vertical-offset="38284">
+          <caret line="177" column="58" selection-start-line="177" selection-start-column="58" selection-end-line="177" selection-end-column="58" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10469#18130#0" expanded="true" />
-            <element signature="e#18129#18130#0" expanded="true" />
           </folding>
         </state>
       </provider>
