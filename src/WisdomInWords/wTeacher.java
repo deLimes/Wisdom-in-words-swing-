@@ -1945,7 +1945,6 @@ public class wTeacher extends JFrame {
                     });
 
 
-
                 } catch (IOException e) {
                     countOfAttemptsToCreateServer++;
                     if (countOfAttemptsToCreateServer <= NUMBER_OF_ATTEMPTS_TO_CREATE_SERVER) {
