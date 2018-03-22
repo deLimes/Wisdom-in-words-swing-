@@ -469,7 +469,9 @@ public class wTeacher extends JFrame {
                         collocation.ru = resultText;
                     }
 
-                    indexOfThePreviousSelectedRow = indexOfTheTempPreviousSelectedRow;
+                    if(indexOfTheSelectedRow != indexOfTheTempPreviousSelectedRow) {
+                        indexOfThePreviousSelectedRow = indexOfTheTempPreviousSelectedRow;
+                    }
                     indexOfTheTempPreviousSelectedRow = indexOfTheSelectedRow;
 
 
