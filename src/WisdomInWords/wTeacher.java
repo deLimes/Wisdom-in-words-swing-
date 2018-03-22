@@ -409,9 +409,9 @@ public class wTeacher extends JFrame {
 
                     //get the index editable word
                     if (englishLeft) {
-                        original = listDictionary.get(indexOfTheSelectedRow).ru;
+                        original = collocation.ru;
                     } else {
-                        original = listDictionary.get(indexOfTheSelectedRow).en
+                        original = collocation.en
                                 .replace("✓", "")
                                 .replace("⚓", "");
                     }
@@ -447,7 +447,7 @@ public class wTeacher extends JFrame {
                             resultText = original;
                         } else {
                             resultText = original + "⚓";
-                            listDictionary.get(indexOfTheSelectedRow).isDifficult = true;
+                            collocation.isDifficult = true;
 
                             startStopTimer(false, true);
                         }
