@@ -2138,8 +2138,10 @@ public class wTeacher extends JFrame {
 
             int j = 0;
             for (int i = original.length() + 1; i < getStyledDocument().getLength(); i++) {
-                StyleConstants.setForeground(set, Color.GRAY);
-                doc.setCharacterAttributes(j, 1, set, true);
+                if(j < original.length()) {
+                    StyleConstants.setForeground(set, Color.GRAY);
+                    doc.setCharacterAttributes(j, 1, set, true);
+                }
 
                 if (j >= original.length() || original.charAt(j) != answer.charAt(j)) {
                     StyleConstants.setForeground(set, Color.RED);
@@ -2187,6 +2189,7 @@ public class wTeacher extends JFrame {
                     }
                 }
 
+
                 if (i < original.length() && answer.length() >= original.length()) {
                     charactersEqual = original.charAt(i) == answer.charAt(i + answer.length() - original.length());
 
@@ -2202,6 +2205,7 @@ public class wTeacher extends JFrame {
                         doc.setCharacterAttributes(i, 1, set, true);
                     }
                 }
+
                 j--;
             }
 
