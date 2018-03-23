@@ -1350,8 +1350,6 @@ public class wTeacher extends JFrame {
             }
         });
 
-        startServer(portNumber);
-
         JButton btnTest = new JButton("Test");
         // Слушатель обработки события
         btnTest.addActionListener(new ActionListener() {
@@ -1412,6 +1410,8 @@ public class wTeacher extends JFrame {
         panel.add(spinnerNumberOfBlocks);
         panel.add(labelNumberOfCollocationsInABlock);
         panel.add(spinnerNumberOfCollocationsInABlock);
+
+        startServer(portNumber);
 
     }
 
@@ -2138,6 +2138,7 @@ public class wTeacher extends JFrame {
 
             int j = 0;
             for (int i = original.length() + 1; i < getStyledDocument().getLength(); i++) {
+
                 if(j < original.length()) {
                     StyleConstants.setForeground(set, Color.GRAY);
                     doc.setCharacterAttributes(j, 1, set, true);
