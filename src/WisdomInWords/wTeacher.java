@@ -1411,7 +1411,13 @@ public class wTeacher extends JFrame {
         panel.add(labelNumberOfCollocationsInABlock);
         panel.add(spinnerNumberOfCollocationsInABlock);
 
-        startServer(portNumber);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                startServer(portNumber);
+            }
+        });
+
+
 
     }
 
@@ -1813,6 +1819,7 @@ public class wTeacher extends JFrame {
             j++;
         }
 
+        progressBar.setValue(0);
         labelNumberOfLearnedWords.setText("learned: 0");
         labelNumberOfDifficultWords.setText("difficult: 0");
         labelNumberOfWordsLeft.setText("left: " + Integer.toString(listDictionary.size()));
@@ -2129,7 +2136,16 @@ public class wTeacher extends JFrame {
                                                        int column) {
 
             setFont(new Font(adaptee.getFont().getName(), adaptee.getFont().getStyle(), fontSize));
-            setText(original + "\r\n" + answer);
+            String comparison = original + "\r\n" + answer;
+            setText(comparison);
+            //
+            char falseDoubletLeftCharacter = '⚓';//any unique character
+            char falseDoubletRightCharacter = '⚓';//any unique character
+            char lastLeftCorrectCharacter = '⚓';//any unique character
+            char lastRightCorrectCharacter = '⚓';//any unique character
+            char lastRightOriginalCharacter = '⚓';//any unique character
+            char lastRightPreviousOriginalCharacter = '✓';
+            //
 
             for (int i = 0; i < original.length(); i++) {
                 StyleConstants.setForeground(set, Color.BLUE);
@@ -2147,7 +2163,11 @@ public class wTeacher extends JFrame {
                 if (j >= original.length() || original.charAt(j) != answer.charAt(j)) {
                     StyleConstants.setForeground(set, Color.RED);
                     doc.setCharacterAttributes(i, 1, set, true);
-
+                    //
+                    if (falseDoubletLeftCharacter == '⚓') {
+                        falseDoubletLeftCharacter = answer.charAt(j);
+                    }
+                    //
 
                     if (j <= original.length()) {
                         StyleConstants.setForeground(set, Color.BLUE);
@@ -2157,6 +2177,10 @@ public class wTeacher extends JFrame {
                 } else {
                     StyleConstants.setForeground(set, new Color(0, 200, 0));
                     doc.setCharacterAttributes(i, 1, set, true);
+                    //
+                    falseDoubletLeftCharacter = '⚓';
+                    lastLeftCorrectCharacter = answer.charAt(j);
+                    //
                 }
                 j++;
             }
@@ -2176,7 +2200,18 @@ public class wTeacher extends JFrame {
                     if (color.equals(Color.RED) && charactersEqual) {
                         StyleConstants.setForeground(set, new Color(0, 200, 0));
                         doc.setCharacterAttributes(pos, 1, set, true);
+                        //
+                        lastRightCorrectCharacter = answer.charAt(j);
+                        //
+                        ///////////////
+                        falseDoubletRightCharacter = '⚓';
+                        //////////////
+                    }else if(j > 0){
+                        if (falseDoubletRightCharacter == '⚓') {
+                            falseDoubletRightCharacter = answer.charAt(j);
+                        }
                     }
+                    ///////////////
                 } else if (i < original.length() && answer.length() < original.length() && i >= original.length() - answer.length()) {
                     charactersEqual = original.charAt(i) == answer.charAt(i - (original.length() - answer.length()));
 
@@ -2187,8 +2222,37 @@ public class wTeacher extends JFrame {
                     if (color.equals(Color.RED) && charactersEqual) {
                         StyleConstants.setForeground(set, new Color(0, 200, 0));
                         doc.setCharacterAttributes(pos, 1, set, true);
+                        //
+                        lastRightCorrectCharacter = answer.charAt(i - (original.length() - answer.length()));
+                        //
+                        ///////////////
+                        falseDoubletRightCharacter = '⚓';
+                        //////////////
+                    }else if(j > 0){
+                        if (falseDoubletRightCharacter == '⚓') {
+                            falseDoubletRightCharacter = answer.charAt(j);
+                        }
                     }
+                    ///////////////
                 }
+
+                //
+                if (j > 0
+                        &&lastLeftCorrectCharacter == falseDoubletLeftCharacter
+                        && lastLeftCorrectCharacter == lastRightCorrectCharacter
+                        && falseDoubletLeftCharacter == falseDoubletRightCharacter){
+
+                    lastRightCorrectCharacter = '⚓';
+
+                    StyleConstants.setForeground(set, Color.RED);
+                    doc.setCharacterAttributes(i, 1, set, true);
+                }
+
+                if ( i < original.length()) {
+                    lastRightOriginalCharacter = comparison.charAt(i);
+                    lastRightPreviousOriginalCharacter = comparison.charAt(i + 1);
+                }
+                //
 
 
                 if (i < original.length() && answer.length() >= original.length()) {
@@ -2205,6 +2269,14 @@ public class wTeacher extends JFrame {
                         StyleConstants.setForeground(set, Color.GRAY);
                         doc.setCharacterAttributes(i, 1, set, true);
                     }
+                    //
+                    if(lastRightOriginalCharacter == lastRightPreviousOriginalCharacter
+                            && lastRightOriginalCharacter != falseDoubletLeftCharacter){
+
+                        StyleConstants.setForeground(set, Color.BLUE);
+                        doc.setCharacterAttributes(i+1, 1, set, true);
+                    }
+                    //
                 }
 
                 j--;
