@@ -1181,6 +1181,58 @@ public class wTeacher extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                if(swap){
+                    int result = JOptionPane.showConfirmDialog(wTeacher.this,
+                            "Clear progress?",
+                            "Reset progress",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+
+                    if (result == JOptionPane.YES_OPTION) {
+
+                        table.clearSelection();
+                        dtm.getDataVector().clear();
+                        for (int i = 0; i < listDictionary.size(); i++) {
+                            Collocation collocation = listDictionary.get(i);
+
+                            collocation.learnedEn = false;
+                            collocation.learnedRu = false;
+                            collocation.isDifficult = false;
+                            collocation.en = collocation.en
+                                    .replace("✓", "")
+                                    .replace("⚓", "");
+
+                            dtm.addRow(new Object[0]);
+                            dtm.setValueAt(collocation.learnedEn, i, 0);
+                            dtm.setValueAt(collocation.en, i, 1);
+                            dtm.setValueAt(collocation.learnedRu, i, 2);
+                            dtm.setValueAt(collocation.ru, i, 3);
+                        }
+
+                        defineIndexesOfWords();
+                        answersAreHidden = false;
+
+                        progressBar.setValue((0));
+                        labelNumberOfLearnedWords.setText("learned: 0");
+                        labelNumberOfDifficultWords.setText("difficult: 0");
+                        labelNumberOfWordsLeft.setText("left: " + Integer.toString(listDictionary.size()));
+                        labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
+
+                        Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
+
+                        prefs.putInt("countOfLearnedWords", 0);
+                        prefs.putInt("countOfDifficultWords", 0);
+                        prefs.putInt("countOfLeftWords", listDictionary.size());
+                        prefs.putInt("countOfTotalWords", listDictionary.size());
+
+                    }
+
+                    swap = false;
+                    btnSwap.setBackground(btnHide.getBackground());
+
+                    return;
+                }
+
                 int indexOfTheSelectedRow = table.getSelectedRow();
                 if (indexOfTheSelectedRow != -1) {
                     Collocation collocation = listDictionary.get(indexOfTheSelectedRow);
@@ -1914,8 +1966,10 @@ public class wTeacher extends JFrame {
         }
         rowBeginIndexOfNativeWords = rowBeginIndexOfWellLearnedWords + numberOfBlocks * numberOfCollocationsInABlock;
 
-        if (rowBeginIndexOfWellLearnedWords == 0) {
+        if (rowBeginIndexOfWellLearnedWords == 0 || rowBeginIndexOfLearnedWords == listDictionaryCopy.size()) {
             rowBeginIndexOfWellLearnedWords = listDictionaryCopy.size();
+            rowBeginIndexOfLearnedWords  = listDictionaryCopy.size();
+            rowBeginIndexOfNativeWords = listDictionaryCopy.size();
         }
 
     }
