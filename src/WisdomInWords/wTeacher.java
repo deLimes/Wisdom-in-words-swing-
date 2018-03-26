@@ -2260,7 +2260,7 @@ public class wTeacher extends JFrame {
                         ///////////////
                         falseDoubletRightCharacter = '⚓';
                         //////////////
-                    }else if(j > 0){
+                    }else if(j >= 0){
                         if (falseDoubletRightCharacter == '⚓') {
                             falseDoubletRightCharacter = answer.charAt(j);
                         }
@@ -2282,7 +2282,7 @@ public class wTeacher extends JFrame {
                         ///////////////
                         falseDoubletRightCharacter = '⚓';
                         //////////////
-                    }else if(j > 0){
+                    }else if(j >= 0){
                         if (falseDoubletRightCharacter == '⚓') {
                             falseDoubletRightCharacter = answer.charAt(j);
                         }
@@ -2291,7 +2291,7 @@ public class wTeacher extends JFrame {
                 }
 
                 //
-                if (j > 0
+                if (j >= 0
                         &&lastLeftCorrectCharacter == falseDoubletLeftCharacter
                         && lastLeftCorrectCharacter == lastRightCorrectCharacter
                         && falseDoubletLeftCharacter == falseDoubletRightCharacter){
@@ -2302,7 +2302,7 @@ public class wTeacher extends JFrame {
                     doc.setCharacterAttributes(i, 1, set, true);
                 }
 
-                if ( i < original.length()) {
+                if (i < original.length() - 1) {
                     lastRightOriginalCharacter = comparison.charAt(i);
                     lastRightPreviousOriginalCharacter = comparison.charAt(i + 1);
                 }
@@ -2316,23 +2316,25 @@ public class wTeacher extends JFrame {
                         StyleConstants.setForeground(set, Color.GRAY);
                         doc.setCharacterAttributes(i, 1, set, true);
                     }
-                } else if (i < original.length() && answer.length() < original.length() && i >= original.length() - answer.length()) {
-                    charactersEqual = original.charAt(i) == answer.charAt(i - (original.length() - answer.length()));
+                } else if (i < original.length() && answer.length() < original.length()) {//&& i >= original.length() - answer.length()) {
+                    if (i >= original.length() - answer.length()) {
+                        charactersEqual = original.charAt(i) == answer.charAt(i - (original.length() - answer.length()));
 
-                    if (charactersEqual) {
-                        StyleConstants.setForeground(set, Color.GRAY);
-                        doc.setCharacterAttributes(i, 1, set, true);
+                        if (charactersEqual) {
+
+                            StyleConstants.setForeground(set, Color.GRAY);
+                            doc.setCharacterAttributes(i, 1, set, true);
+                        }
                     }
                     //
                     if(lastRightOriginalCharacter == lastRightPreviousOriginalCharacter
                             && lastRightOriginalCharacter != falseDoubletLeftCharacter){
 
                         StyleConstants.setForeground(set, Color.BLUE);
-                        doc.setCharacterAttributes(i+1, 1, set, true);
+                        doc.setCharacterAttributes(i + 1, 1, set, true);
                     }
                     //
                 }
-
                 j--;
             }
 
