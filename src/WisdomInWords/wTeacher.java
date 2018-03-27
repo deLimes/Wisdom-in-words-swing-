@@ -489,6 +489,10 @@ public class wTeacher extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                if(filterChanged){
+                    return;
+                }
+
                 changeColumns(false);
 
             }
@@ -502,6 +506,10 @@ public class wTeacher extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                if(filterChanged){
+                    return;
+                }
+
                 hideAnswers();
 
             }
@@ -514,6 +522,10 @@ public class wTeacher extends JFrame {
         btnShow.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                if(filterChanged){
+                    return;
+                }
 
                 showAnswers();
 
@@ -606,6 +618,10 @@ public class wTeacher extends JFrame {
         btnSort.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                if(filterChanged){
+                    return;
+                }
 
                 Comparator enRuComparator = new Comparator<Collocation>() {
                     @Override
@@ -765,6 +781,10 @@ public class wTeacher extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                if(filterChanged){
+                    return;
+                }
+
                 List<Collocation> listOfStudiedWords = new ArrayList<Collocation>();
                 List<Collocation> listOfFavoriteWords = new ArrayList<Collocation>();
                 List<Collocation> listOfDifficultWords = new ArrayList<Collocation>();
@@ -920,8 +940,13 @@ public class wTeacher extends JFrame {
                         int indexOfTheSelectedColumn = table.convertColumnIndexToModel(table.getSelectedColumn());
 
                         Object v = dtm.getValueAt(table.getSelectedRow(), indexOfTheSelectedColumn);
-                        if (!(v instanceof String)) {
+                        if (!(v instanceof String)
+                                || answersAreHidden) {
                             return;
+                        }
+
+                        if(storedTextOfFilter.isEmpty()){
+                            selectedRow = table.getSelectedRow();
                         }
 
                         String content = v.toString();
@@ -963,6 +988,7 @@ public class wTeacher extends JFrame {
                             link = "https://translate.google.com/?hl=ru#ru/en/" + content;
                         }
 
+                        jtfFilterValue.setText(content);
                         SwtBrowserCanvas.browserCanvasSetUrl(link);
                     }
                 }, 1000);
@@ -1402,6 +1428,22 @@ public class wTeacher extends JFrame {
             }
         });
 
+        JButton btnClearFilter = new JButton("X");
+        // Слушатель обработки события
+        btnClearFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                jtfFilterValue.setText("");
+                setRowFilter("");
+                storedTextOfFilter = "";
+                filterChanged = false;
+
+                scrollToRow(selectedRow);
+
+            }
+        });
+
         JButton btnTest = new JButton("Test");
         // Слушатель обработки события
         btnTest.addActionListener(new ActionListener() {
@@ -1454,6 +1496,7 @@ public class wTeacher extends JFrame {
         panel.add(scrollPane);
 
         panel.add(jtfFilterValue);
+        panel.add(btnClearFilter);
         panel.add(btnAdd);
         panel.add(btnDelete);
         panel.add(labelFontSize);
