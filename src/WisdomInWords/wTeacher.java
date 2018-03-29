@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.*;
 import javax.swing.Timer;
+import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.event.*;
 import javax.swing.table.*;
@@ -20,6 +21,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.*;
 import java.util.*;
 import java.util.List;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 
@@ -29,6 +31,9 @@ import java.util.prefs.Preferences;
 public class wTeacher extends JFrame {
 
     private JPanel panel;
+    private JPanel topPanel;
+    private JFrame frame;
+    private Point compCoords;
     private DefaultTableModel dtm;
     private TableColumnModel columnModel;
     private Boolean englishLeft = true;
@@ -51,7 +56,8 @@ public class wTeacher extends JFrame {
     JTextField jtfFilterValue;
     JProgressBar progressBar = new JProgressBar();
     String MASSAGE_WRONG_FORMAT = "Use format: [ENword][~][RUword]";
-    String title = "ILEW - I Lern English Words";
+    String title = "    ILEW - I Lern English Words";
+    JLabel labelTitle = new JLabel(title);
     JLabel labelNumberOfLearnedWords = new JLabel("");
     JLabel labelNumberOfDifficultWords = new JLabel("");
     JLabel labelNumberOfWordsLeft = new JLabel("");
@@ -70,6 +76,8 @@ public class wTeacher extends JFrame {
     int indexOfThePreviousSelectedRow = -1, indexOfTheTempPreviousSelectedRow = -1;
     String storedTextOfFilter = "";
     boolean storedValueHotStartStop;
+    boolean movingColumns = false;
+    boolean ignoreTableChange = false;
 
 
     private boolean EnglishTextLayout = false;
@@ -82,9 +90,6 @@ public class wTeacher extends JFrame {
             'п', 'а', 'в', 'ы', 'ф', 'и', 'м', 'с', 'ч', 'я', 'е', 'к', 'у', 'ц', 'й', 'ё'};
 
 
-    /////////////
-    HttpsURLConnection yc;
-    ///////////
 
     public static void main(String[] args) {
 
@@ -98,20 +103,121 @@ public class wTeacher extends JFrame {
     }
 
     private void initFrame() {
-        pack();
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle(title);//0.5Keyboard
-        setLocationRelativeTo(null);
-        setResizable(false);
-        setLayout(new BorderLayout());
-        setVisible(true);
 
-        addWindowListener(new WindowAdapter() {
+        frame = new JFrame(title);
+        frame.setUndecorated(true); // Remove title bar
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+
+        topPanel = new JPanel(new BorderLayout());
+        JPanel a = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel b = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel c = new JPanel(new FlowLayout(FlowLayout.RIGHT));;
+
+        final JButton btnHelp = new JButton("?");
+        // Слушатель обработки события
+        btnHelp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                frame.getContentPane().removeAll();
+                frame.add(topPanel, BorderLayout.PAGE_START);
+                frame.add(btnrBack, BorderLayout.PAGE_END);
+                SwtBrowserCanvas.addBrowserToFrame(frame);
+
+                String link = "https://www.youtube.com/watch?v=sFWIiEP4V9w";
+                SwtBrowserCanvas.browserCanvasSetUrl(link);
+
+                getContentPane().revalidate();
+                getContentPane().repaint();
+
+                frame.setSize(new Dimension(frame.getSize().width, frame.getSize().height + 1));
+
+            }
+        });
+        final JButton btnMinimize = new JButton("-");
+        btnMinimize.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frame.setState(JFrame.ICONIFIED);
+            }
+        });
+        final JButton btnExit = new JButton("X");
+        btnExit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                if (!swap) {
+                    save();
+                }
+                System.exit(0);
+            }
+        });
+
+        compCoords = null;
+        topPanel.addMouseListener(new MouseListener() {
+            public void mouseReleased(MouseEvent e) {
+                compCoords = null;
+            }
+
+            public void mousePressed(MouseEvent e) {
+                compCoords = e.getPoint();
+            }
+
+            public void mouseExited(MouseEvent e) {
+            }
+
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            public void mouseClicked(MouseEvent e) {
+            }
+        });
+        topPanel.addMouseMotionListener(new MouseMotionListener() {
+            public void mouseMoved(MouseEvent e) {
+            }
+
+            public void mouseDragged(MouseEvent e) {
+                Point currCoords = e.getLocationOnScreen();
+                frame.setLocation(currCoords.x - compCoords.x, currCoords.y - compCoords.y);
+            }
+        });
+        a.add(labelTitle);
+
+        c.add(btnHelp);
+        c.add(btnMinimize);
+        c.add(btnExit);
+
+        topPanel.add(a, "West");
+        topPanel.add(b, "Center");
+        topPanel.add(c, "East");
+
+        frame.add(BorderLayout.NORTH, topPanel);
+        frame.setLocationRelativeTo(null);
+
+        frame.add(panel);
+
+        frame.pack();
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setLayout(new BorderLayout());
+        frame.setVisible(true);
+
+        frame.addWindowListener(new WindowAdapter() {
 
             @Override
             public void windowClosing(WindowEvent e) {
 
-                if(!swap){
+                if (!swap) {
                     save();
                 }
 
@@ -121,10 +227,9 @@ public class wTeacher extends JFrame {
 
     private void initPanel() {
 
-
         panel = new JPanel();
         panel.setPreferredSize(new Dimension(900, 550));
-        getContentPane().add(panel);
+        //getContentPane().add(panel);
 
         init();
     }
@@ -167,7 +272,8 @@ public class wTeacher extends JFrame {
                 } else if (colIndex != 3) {
                     rComp.setBackground(getBackground());
                 }
-                Collocation collocation = listDictionary.get(rowIndex);
+                int index = (Integer) table.getValueAt(rowIndex, 4);
+                Collocation collocation = listDictionary.get(index);
                 if (listDictionary.size() > 0 && collocation.isDifficult) {
                     rComp.setBackground(new Color(0xFFA07A));
                 }
@@ -200,6 +306,8 @@ public class wTeacher extends JFrame {
                         return Boolean.class;
                     case 3:
                         return String.class;
+                    case 4:
+                        return Integer.class;
                     default:
                         return String.class;
                 }
@@ -209,6 +317,7 @@ public class wTeacher extends JFrame {
         };
 
         table.setModel(dtm);
+        columnModel = table.getColumnModel();
         //table.putClientProperty("JTable.autoStartsEdit", true);
         table.setSurrendersFocusOnKeystroke(true);
 
@@ -216,12 +325,13 @@ public class wTeacher extends JFrame {
         dtm.addColumn("En");
         dtm.addColumn("");
         dtm.addColumn("Ru");
+        dtm.addColumn("index");
 
-        columnModel = table.getColumnModel();
         restoreListDictionary();
         defineIndexesOfWords();
 
         Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
+
         labelNumberOfLearnedWords.setText("learned: " + Integer.toString(prefs.getInt("countOfLearnedWords", 0)));
         labelNumberOfDifficultWords.setText("difficult: " + Integer.toString(prefs.getInt("countOfDifficultWords", 0)));
         labelNumberOfWordsLeft.setText("left: " + Integer.toString(prefs.getInt("countOfLeftWords", 0)));
@@ -230,22 +340,14 @@ public class wTeacher extends JFrame {
         countOfLearnedWords = prefs.getInt("countOfLearnedWords", 0);
         progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
 
-        int j = 0;
-        for (Collocation i : listDictionary) {
-            dtm.addRow(new Object[0]);
-            dtm.setValueAt(i.learnedEn, j, 0);
-            dtm.setValueAt(i.en, j, 1);
-            dtm.setValueAt(i.learnedRu, j, 2);
-            dtm.setValueAt(i.ru, j, 3);
-            j++;
-        }
-
         setColumnWidth();
 
-        englishLeft = prefs.getBoolean("englishLeft", true);
-        if (!englishLeft) {
+        //englishLeft = prefs.getBoolean("englishLeft", true);
+
+        if (englishLeft != prefs.getBoolean("englishLeft", true)) {
             changeColumns(true);
         }
+
 
         final boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
         if (answersWereHidden) {
@@ -305,21 +407,21 @@ public class wTeacher extends JFrame {
             @Override
             public void tableChanged(TableModelEvent e) {
 
-                int indexOfTheSelectedRow = table.getSelectedRow();
-                int indexConvertOfTheSelectedColumn = table.convertColumnIndexToModel(table.getSelectedColumn());
-                if (indexOfTheSelectedRow == -1 || indexConvertOfTheSelectedColumn == -1
-                        || indexOfTheSelectedRow >= dtm.getDataVector().size()
-                        || listDictionary.size() == 0
-                        || filterChanged
-                        || indexOfTheSelectedRow == -1
-                        || previousRow == -1) {
+                int indexOfTheFilteredSelectedRow = table.getSelectedRow();
 
-                    if (jtfFilterValue.getText().isEmpty()) {
-                        filterChanged = false;
-                    }
+                int indexConvertOfTheSelectedColumn = table.convertColumnIndexToModel(table.getSelectedColumn());
+                if (indexOfTheFilteredSelectedRow == -1 || indexConvertOfTheSelectedColumn == -1
+                        || indexOfTheFilteredSelectedRow >= dtm.getDataVector().size()
+                        || listDictionary.size() == 0
+                        || movingColumns
+                        || previousRow == -1
+                        || ignoreTableChange) {
+
                     return;
                 }
+                int indexOfTheSelectedRow = (Integer) table.getValueAt(indexOfTheFilteredSelectedRow, 4);
                 int indexOfTheSelectedColumn = table.getSelectedColumn();
+
                 Object v = dtm.getValueAt(indexOfTheSelectedRow, indexConvertOfTheSelectedColumn);
                 Collocation collocation = listDictionary.get(indexOfTheSelectedRow);
 
@@ -336,11 +438,7 @@ public class wTeacher extends JFrame {
                             flagEnSwitch = true;
 
                             collocation.learnedEn = collocation.learnedRu = false;
-                            if (englishLeft) {
-                                dtm.setValueAt(false, table.getSelectedRow(), 2);
-                            } else {
-                                dtm.setValueAt(false, table.getSelectedRow(), 0);
-                            }
+                            table.setValueAt(false, indexOfTheFilteredSelectedRow, 2);
                         }
                     } else if (indexOfTheSelectedColumn == 2) {
                         if (englishLeft) {
@@ -353,12 +451,7 @@ public class wTeacher extends JFrame {
                             flagRuSwitch = true;
 
                             collocation.learnedEn = collocation.learnedRu = true;
-                            if (englishLeft) {
-                                dtm.setValueAt(true, table.getSelectedRow(), 0);
-                            } else {
-                                dtm.setValueAt(true, table.getSelectedRow(), 2);
-                            }
-
+                            table.setValueAt(true, indexOfTheFilteredSelectedRow, 0);
                         }
                     }
 
@@ -366,17 +459,15 @@ public class wTeacher extends JFrame {
                         stringSwitch = true;
 
                         if (collocation.learnedEn && collocation.learnedRu) {
+
                             if (englishLeft) {
-                                dtm.setValueAt(collocation.ru, indexOfTheSelectedRow, 3);
+                                table.setValueAt(collocation.ru, indexOfTheFilteredSelectedRow, 3);
                             } else {
-                                dtm.setValueAt(collocation.en, indexOfTheSelectedRow, 1);
+                                table.setValueAt(collocation.en, indexOfTheFilteredSelectedRow, 3);
                             }
-                        } else if (collocation.learnedEn != collocation.learnedRu && answersAreHidden) {
-                            if (englishLeft) {
-                                dtm.setValueAt("", table.getSelectedRow(), 3);
-                            } else {
-                                dtm.setValueAt("", table.getSelectedRow(), 1);
-                            }
+
+                        } else if (answersAreHidden) {
+                            table.setValueAt("", indexOfTheFilteredSelectedRow, 3);
                         }
                         flagEnSwitch = false;
                         flagRuSwitch = false;
@@ -400,6 +491,7 @@ public class wTeacher extends JFrame {
                 } else if ((v instanceof String)) {
 
                     String content = v.toString();
+
                     if (rowChanged || columnChanged || hideAnswers || showAnswers
                             || content.isEmpty() || content.contains("✓") || content.contains("⚓") ) {
 
@@ -421,18 +513,15 @@ public class wTeacher extends JFrame {
                     if (answer.equals(original)) {
                         resultText = original + "✓";
                         if (answersAreHidden) {
-                            dtm.setValueAt("",
-                                    table.getSelectedRow(),
-                                    indexConvertOfTheSelectedColumn);
-
+                            ignoreTableChange = true;
+                            table.setValueAt("", indexOfTheFilteredSelectedRow, 3);
 
                             if (indexOfTheSelectedRow == selectedRowForTimer) {
                                 startStopTimer(true, true);
                             }
                         } else {
-                            dtm.setValueAt(resultText,
-                                    table.getSelectedRow(),
-                                    indexConvertOfTheSelectedColumn);
+                            ignoreTableChange = true;
+                            table.setValueAt(resultText, indexOfTheFilteredSelectedRow, 3);
 
                             if (indexOfTheSelectedRow == selectedRowForTimer) {
                                 startStopTimer(true, true);
@@ -440,7 +529,7 @@ public class wTeacher extends JFrame {
                         }
 
                         if (!englishLeft) {
-                            listDictionary.get(indexOfTheSelectedRow).isDifficult = false;
+                            collocation.isDifficult = false;
                         }
                     } else {
                         if (englishLeft) {
@@ -451,14 +540,13 @@ public class wTeacher extends JFrame {
 
                             startStopTimer(false, true);
                         }
+
                         if (answersAreHidden) {
-                            dtm.setValueAt("",
-                                    table.getSelectedRow(),
-                                    indexConvertOfTheSelectedColumn);
+                            ignoreTableChange = true;
+                            table.setValueAt("", indexOfTheFilteredSelectedRow, 3);
                         } else {
-                            dtm.setValueAt(resultText,
-                                    table.getSelectedRow(),
-                                    indexConvertOfTheSelectedColumn);
+                            ignoreTableChange = true;
+                            table.setValueAt(resultText, indexOfTheFilteredSelectedRow, 3);
                         }
 
                     }
@@ -474,7 +562,7 @@ public class wTeacher extends JFrame {
                     }
                     indexOfTheTempPreviousSelectedRow = indexOfTheSelectedRow;
 
-
+                    ignoreTableChange = false;
                     tableChanged = true;
                 }
             }
@@ -489,10 +577,6 @@ public class wTeacher extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if(filterChanged){
-                    return;
-                }
-
                 changeColumns(false);
 
             }
@@ -506,10 +590,6 @@ public class wTeacher extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if(filterChanged){
-                    return;
-                }
-
                 hideAnswers();
 
             }
@@ -522,10 +602,6 @@ public class wTeacher extends JFrame {
         btnShow.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                if(filterChanged){
-                    return;
-                }
 
                 showAnswers();
 
@@ -600,14 +676,12 @@ public class wTeacher extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                int k = getContentPane().getComponentCount();
-                for (int i = 0; i < k; i++) {
-                    getContentPane().remove(0);
-                }
-                getContentPane().add(panel);
-                getContentPane().revalidate();
-                getContentPane().repaint();
-                setSize(new Dimension(getSize().width, getSize().height - 1));
+                frame.getContentPane().removeAll();
+                frame.add(topPanel, BorderLayout.PAGE_START);
+                frame.getContentPane().add(panel);
+                frame.getContentPane().revalidate();
+                frame.getContentPane().repaint();
+                setSize(new Dimension(frame.getSize().width, frame.getSize().height - 1));
 
             }
         });
@@ -767,6 +841,8 @@ public class wTeacher extends JFrame {
                     hideAnswers();
                 }
 
+                defineIndexesOfWords();
+
                 swap = false;
                 btnSwap.setBackground(btnHide.getBackground());
 
@@ -920,6 +996,8 @@ public class wTeacher extends JFrame {
                     hideAnswers();
                 }
 
+                defineIndexesOfWords();
+
                 swap = false;
                 btnSwap.setBackground(btnHide.getBackground());
 
@@ -940,8 +1018,7 @@ public class wTeacher extends JFrame {
                         int indexOfTheSelectedColumn = table.convertColumnIndexToModel(table.getSelectedColumn());
 
                         Object v = dtm.getValueAt(table.getSelectedRow(), indexOfTheSelectedColumn);
-                        if (!(v instanceof String)
-                                || answersAreHidden) {
+                        if (!(v instanceof String)) {
                             return;
                         }
 
@@ -950,16 +1027,20 @@ public class wTeacher extends JFrame {
                         }
 
                         String content = v.toString();
+                        if(content.isEmpty()){
+                            return;
+                        }
                         content = content.replace("✓", "").replace("⚓", "");
 
-                        getContentPane().remove(0);
-                        getContentPane().add(btnrBack, BorderLayout.PAGE_START);
-                        SwtBrowserCanvas.addBrowserToFrame(wTeacher.this);
+                        frame.getContentPane().removeAll();
+                        frame.add(topPanel, BorderLayout.PAGE_START);
+                        frame.add(btnrBack, BorderLayout.PAGE_END);
+                        SwtBrowserCanvas.addBrowserToFrame(frame);
 
-                        getContentPane().revalidate();
-                        getContentPane().repaint();
+                        frame.getContentPane().revalidate();
+                        frame.getContentPane().repaint();
 
-                        setSize(new Dimension(getSize().width, getSize().height + 1));
+                        frame.setSize(new Dimension(frame.getSize().width, frame.getSize().height + 1));
 
 
                         //translate the word
@@ -1127,6 +1208,11 @@ public class wTeacher extends JFrame {
 
                 if (text.isEmpty()){
                     scrollToRow(selectedRow);
+                    filterChanged = false;
+                    defineIndexesOfWords();
+                    if (answersAreHidden) {
+                        hideAnswers();
+                    }
                 }
                 storedTextOfFilter = text;
             }
@@ -1146,7 +1232,7 @@ public class wTeacher extends JFrame {
                         showMessageDialog(MASSAGE_WRONG_FORMAT);
                         return;
                     }
-                    Collocation collocation = new Collocation(false, collocationParts[0].trim(), false, collocationParts[1].trim(), false);
+                    Collocation collocation = new Collocation(false, collocationParts[0].trim(), false, collocationParts[1].trim(), false, 0);
                     Character Symbol = collocation.en.charAt(0);
                     boolean EnglishLayout = false;//engList.indexOf(Symbol) != -1;
                     boolean RussianLayout = false;//rusList.indexOf(Symbol) != -1;
@@ -1181,6 +1267,7 @@ public class wTeacher extends JFrame {
 
                     jtfFilterValue.setText("");
                     setRowFilter("");
+                    defineIndexesOfWords();
 
                     Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
                     int countOfLeftWords = prefs.getInt("countOfLeftWords", 0);
@@ -1439,6 +1526,9 @@ public class wTeacher extends JFrame {
                 storedTextOfFilter = "";
                 filterChanged = false;
 
+                if (answersAreHidden) {
+                    hideAnswers();
+                }
                 scrollToRow(selectedRow);
 
             }
@@ -1466,7 +1556,6 @@ public class wTeacher extends JFrame {
         labelNumberOfDifficultWords.setForeground(new Color(255, 140, 0));
         labelNumberOfWordsLeft.setForeground(Color.RED);
         labelNumberOfWordsTotal.setForeground(Color.BLACK);
-
 
         panel.add(btnReset);
         panel.add(btnHide);
@@ -1582,14 +1671,8 @@ public class wTeacher extends JFrame {
         hideAnswers = true;
         tableChanged = false;
 
-        if (englishLeft) {
-            for (int i = 0; i < listDictionary.size(); i++) {
-                dtm.setValueAt("", i, 3);
-            }
-        } else {
-            for (int i = 0; i < listDictionary.size(); i++) {
-                dtm.setValueAt("", i, 1);
-            }
+        for (int i = 0; i < table.getRowCount(); i++) {
+            table.setValueAt("", i, 3);
         }
 
         hideAnswers = false;
@@ -1605,16 +1688,17 @@ public class wTeacher extends JFrame {
         tableChanged = false;
         answersAreHidden = false;
 
-        int j = 0;
         if (englishLeft) {
-            for (Collocation collocation : listDictionary) {
-                dtm.setValueAt(collocation.ru, j, 3);
-                j++;
+            for (int row = 0; row < table.getRowCount(); row++) {
+                int index = (Integer) table.getValueAt(row, 4);
+                Collocation collocation = listDictionary.get(index);
+                table.setValueAt(collocation.ru, row, 3);
             }
         } else {
-            for (Collocation collocation : listDictionary) {
-                dtm.setValueAt(collocation.en, j, 1);
-                j++;
+            for (int row = 0; row < table.getRowCount(); row++) {
+                int index = (Integer) table.getValueAt(row, 4);
+                Collocation collocation = listDictionary.get(index);
+                table.setValueAt(collocation.en, row, 3);
             }
         }
         showAnswers = false;
@@ -1629,6 +1713,11 @@ public class wTeacher extends JFrame {
         columnModel.getColumn(1).setMaxWidth(425);
         columnModel.getColumn(2).setMaxWidth(25);
         columnModel.getColumn(3).setMaxWidth(425);
+
+        columnModel.getColumn(4).setMinWidth(0);
+        columnModel.getColumn(4).setMaxWidth(0);
+        columnModel.getColumn(4).setPreferredWidth(0);
+
 
     }
 
@@ -1821,15 +1910,28 @@ public class wTeacher extends JFrame {
 
         if (listDictionary.size() == 0) {
             resetListDictionary();
+        }else{
+            int index = 0;
+            for (Collocation i : listDictionary) {
+                dtm.addRow(new Object[0]);
+                dtm.setValueAt(i.learnedEn, index, 0);
+                dtm.setValueAt(i.en, index, 1);
+                dtm.setValueAt(i.learnedRu, index, 2);
+                dtm.setValueAt(i.ru, index, 3);
+                dtm.setValueAt(i.index, index, 4);
+                index++;
+            }
         }
 
     }
 
     private void changeColumns(boolean softwareChange) {
 
+        movingColumns = true;
+
         final TableColumnModel finalColumnModel = columnModel;
 
-        table.setColumnSelectionInterval(1, 1);
+      //table.setColumnSelectionInterval(1, 1);
 
         Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
         boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
@@ -1858,6 +1960,7 @@ public class wTeacher extends JFrame {
             hideAnswers();
         }
 
+        movingColumns = false;
 
     }
 
@@ -1898,20 +2001,23 @@ public class wTeacher extends JFrame {
         }
 
         listDictionary.clear();
+        int index = 0;
         for (int i = 0; i < lines.size(); i += 2) {
-            listDictionary.add(new Collocation(false, lines.get(i), false, lines.get(i + 1), false));
+            listDictionary.add(new Collocation(false, lines.get(i), false, lines.get(i + 1), false, index));
+            index++;
         }
 
         table.clearSelection();
         dtm.getDataVector().clear();
-        int j = 0;
+        index = 0;
         for (Collocation i : listDictionary) {
             dtm.addRow(new Object[0]);
-            dtm.setValueAt(i.learnedEn, j, 0);
-            dtm.setValueAt(i.en, j, 1);
-            dtm.setValueAt(i.learnedRu, j, 2);
-            dtm.setValueAt(i.ru, j, 3);
-            j++;
+            dtm.setValueAt(i.learnedEn, index, 0);
+            dtm.setValueAt(i.en, index, 1);
+            dtm.setValueAt(i.learnedRu, index, 2);
+            dtm.setValueAt(i.ru, index, 3);
+            dtm.setValueAt(i.index, index, 4);
+            index++;
         }
 
         progressBar.setValue(0);
@@ -1933,14 +2039,18 @@ public class wTeacher extends JFrame {
 
         List<Collocation> listDictionaryCopy = new ArrayList<Collocation>();
 
+        int index = 0;
         for (Collocation collocation : listDictionary) {
+            collocation.index = index;
             listDictionaryCopy.add(new Collocation(
                     collocation.learnedEn,
                     collocation.en,
                     collocation.learnedRu,
                     collocation.ru,
-                    collocation.isDifficult
+                    collocation.isDifficult,
+                    collocation.index
             ));
+            index++;
         }
 
         List<Collocation> listOfStudiedWords = new ArrayList<Collocation>();
@@ -2045,7 +2155,7 @@ public class wTeacher extends JFrame {
                     final String finalStrLocalSocketAddress = strLocalSocketAddress;
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            wTeacher.this.setTitle(title + " /socket server: " + finalStrLocalSocketAddress);//0.5Keyboard
+                            labelTitle.setText(title + " /socket server: " + finalStrLocalSocketAddress);//0.5Keyboard
                             System.out.println(finalStrLocalSocketAddress);
                         }
                     });
@@ -2534,7 +2644,6 @@ public class wTeacher extends JFrame {
         }
 
     }
-
 
 
 }
