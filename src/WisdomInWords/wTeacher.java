@@ -272,6 +272,15 @@ public class wTeacher extends JFrame {
                 } else if (colIndex != 3) {
                     rComp.setBackground(getBackground());
                 }
+
+                /*
+                int index = rowIndex;
+                try {
+                    index = (Integer) table.getValueAt(rowIndex, 4);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                */
                 int index = (Integer) table.getValueAt(rowIndex, 4);
                 Collocation collocation = listDictionary.get(index);
                 if (listDictionary.size() > 0 && collocation.isDifficult) {
@@ -757,6 +766,7 @@ public class wTeacher extends JFrame {
                     dtm.setValueAt(collocation.en, j, 1);
                     dtm.setValueAt(collocation.learnedRu, j, 2);
                     dtm.setValueAt(collocation.ru, j, 3);
+                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
@@ -767,6 +777,7 @@ public class wTeacher extends JFrame {
                     dtm.setValueAt(collocation.en, j, 1);
                     dtm.setValueAt(collocation.learnedRu, j, 2);
                     dtm.setValueAt(collocation.ru, j, 3);
+                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
@@ -777,6 +788,7 @@ public class wTeacher extends JFrame {
                         dtm.setValueAt(collocation.en, j, 1);
                         dtm.setValueAt(collocation.learnedRu, j, 2);
                         dtm.setValueAt(collocation.ru, j, 3);
+                        dtm.setValueAt(collocation.index, j, 4);
                         j++;
                     }
                     rowBeginIndexOfLearnedWords = j;
@@ -791,6 +803,7 @@ public class wTeacher extends JFrame {
                     dtm.setValueAt(collocation.en, j, 1);
                     dtm.setValueAt(collocation.learnedRu, j, 2);
                     dtm.setValueAt(collocation.ru, j, 3);
+                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
@@ -808,6 +821,7 @@ public class wTeacher extends JFrame {
                         dtm.setValueAt(collocation.en, j, 1);
                         dtm.setValueAt(collocation.learnedRu, j, 2);
                         dtm.setValueAt(collocation.ru, j, 3);
+                        dtm.setValueAt(collocation.index, j, 4);
                         j++;
                         rowBeginIndexOfWellLearnedWords = j;
                     }
@@ -821,6 +835,7 @@ public class wTeacher extends JFrame {
                     dtm.setValueAt(collocation.en, j, 1);
                     dtm.setValueAt(collocation.learnedRu, j, 2);
                     dtm.setValueAt(collocation.ru, j, 3);
+                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                 }
 
@@ -840,8 +855,6 @@ public class wTeacher extends JFrame {
                 if (answersWereHidden) {
                     hideAnswers();
                 }
-
-                defineIndexesOfWords();
 
                 swap = false;
                 btnSwap.setBackground(btnHide.getBackground());
@@ -910,6 +923,7 @@ public class wTeacher extends JFrame {
                     dtm.setValueAt(collocation.en, j, 1);
                     dtm.setValueAt(collocation.learnedRu, j, 2);
                     dtm.setValueAt(collocation.ru, j, 3);
+                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
@@ -921,6 +935,7 @@ public class wTeacher extends JFrame {
                     dtm.setValueAt(collocation.en, j, 1);
                     dtm.setValueAt(collocation.learnedRu, j, 2);
                     dtm.setValueAt(collocation.ru, j, 3);
+                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
@@ -932,6 +947,7 @@ public class wTeacher extends JFrame {
                         dtm.setValueAt(collocation.en, j, 1);
                         dtm.setValueAt(collocation.learnedRu, j, 2);
                         dtm.setValueAt(collocation.ru, j, 3);
+                        dtm.setValueAt(collocation.index, j, 4);
                         j++;
                     }
                     rowBeginIndexOfLearnedWords = j;
@@ -945,6 +961,7 @@ public class wTeacher extends JFrame {
                     dtm.setValueAt(collocation.en, j, 1);
                     dtm.setValueAt(collocation.learnedRu, j, 2);
                     dtm.setValueAt(collocation.ru, j, 3);
+                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
@@ -962,6 +979,7 @@ public class wTeacher extends JFrame {
                         dtm.setValueAt(collocation.en, j, 1);
                         dtm.setValueAt(collocation.learnedRu, j, 2);
                         dtm.setValueAt(collocation.ru, j, 3);
+                        dtm.setValueAt(collocation.index, j, 4);
                         j++;
                         rowBeginIndexOfWellLearnedWords = j;
                     }
@@ -976,6 +994,7 @@ public class wTeacher extends JFrame {
                     dtm.setValueAt(collocation.en, j, 1);
                     dtm.setValueAt(collocation.learnedRu, j, 2);
                     dtm.setValueAt(collocation.ru, j, 3);
+                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                 }
 
@@ -995,8 +1014,6 @@ public class wTeacher extends JFrame {
                 if (answersWereHidden) {
                     hideAnswers();
                 }
-
-                defineIndexesOfWords();
 
                 swap = false;
                 btnSwap.setBackground(btnHide.getBackground());
@@ -1264,6 +1281,7 @@ public class wTeacher extends JFrame {
                     dtm.setValueAt(collocation.en, 0, 1);
                     dtm.setValueAt(collocation.learnedRu, 0, 2);
                     dtm.setValueAt(collocation.ru, 0, 3);
+                    dtm.setValueAt(collocation.index, 0, 4);
 
                     jtfFilterValue.setText("");
                     setRowFilter("");
@@ -2286,6 +2304,7 @@ public class wTeacher extends JFrame {
                         dtm.setValueAt(collocation.en, i, 1);
                         dtm.setValueAt(collocation.learnedRu, i, 2);
                         dtm.setValueAt(collocation.ru, i, 3);
+                        dtm.setValueAt(collocation.index, i, 4);
                     }
 
                     defineIndexesOfWords();
