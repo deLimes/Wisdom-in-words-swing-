@@ -2240,23 +2240,8 @@ public class wTeacher extends JFrame {
 
                     setDataVector();
 
-
-
-                    /*
-                    int index = 0;
-                    for (Collocation i : listDictionary) {
-                        dtm.addRow(new Object[0]);
-                        dtm.setValueAt(i.learnedEn, index, 0);
-                        dtm.setValueAt(i.en, index, 1);
-                        dtm.setValueAt(i.learnedRu, index, 2);
-                        dtm.setValueAt(i.ru, index, 3);
-                        dtm.setValueAt(i.index, index, 4);
-                        index++;
-                    }
-                    */
-
                     defineIndexesOfWords();
-                    answersAreHidden = false;
+                    //answersAreHidden = false;
                     progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
 
                     labelNumberOfLearnedWords.setText("learned: " + Integer.toString(countOfLearnedWords));
@@ -2265,6 +2250,15 @@ public class wTeacher extends JFrame {
                     labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
 
                     Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
+                    if (!prefs.getBoolean("englishLeft", true)) {
+                        changeColumns(true);
+                    }
+
+                    boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
+                    if (answersWereHidden) {
+                        hideAnswers();
+                    }
+
                     prefs.putBoolean("answersWereHidden", answersAreHidden);
 
                     prefs.putInt("countOfLearnedWords", countOfLearnedWords);
