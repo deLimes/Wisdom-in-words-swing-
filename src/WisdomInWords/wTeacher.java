@@ -1192,6 +1192,7 @@ public class wTeacher extends JFrame {
                 if (serverSocket != null) {
                     try {
                         serverSocket.close();
+                        labelTitle.setText(title);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
