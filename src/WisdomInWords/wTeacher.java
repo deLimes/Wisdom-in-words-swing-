@@ -1189,18 +1189,17 @@ public class wTeacher extends JFrame {
             @Override
             public void stateChanged(ChangeEvent e) {
 
+                if (serverSocket != null) {
+                    try {
+                        serverSocket.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
                 int value = (Integer) spinnerPortNumber.getValue();
                 if (value != portNumber) {
                     portNumber = value;
-                    /*
-                    if(serverSocket != null){
-                        try {
-                            serverSocket.close();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                    */
                     startServer(portNumber);
                 }
 
