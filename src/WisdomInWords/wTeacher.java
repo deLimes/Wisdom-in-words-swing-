@@ -242,7 +242,6 @@ public class wTeacher extends JFrame {
 
         panel = new JPanel();
         panel.setPreferredSize(new Dimension(900, 550));
-        //getContentPane().add(panel);
 
         init();
     }
@@ -306,7 +305,6 @@ public class wTeacher extends JFrame {
 
         };
 
-
         dtm = new DefaultTableModel() {
 
             public Class<?> getColumnClass(int column) {
@@ -335,12 +333,6 @@ public class wTeacher extends JFrame {
         //table.putClientProperty("JTable.autoStartsEdit", true);
         table.setSurrendersFocusOnKeystroke(true);
 
-        dtm.addColumn("");
-        dtm.addColumn("En");
-        dtm.addColumn("");
-        dtm.addColumn("Ru");
-        dtm.addColumn("index");
-
         restoreListDictionary();
         defineIndexesOfWords();
 
@@ -354,14 +346,9 @@ public class wTeacher extends JFrame {
         countOfLearnedWords = prefs.getInt("countOfLearnedWords", 0);
         progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
 
-        setColumnWidth();
-
-        //englishLeft = prefs.getBoolean("englishLeft", true);
-
         if (englishLeft != prefs.getBoolean("englishLeft", true)) {
             changeColumns(true);
         }
-
 
         final boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
         if (answersWereHidden) {
@@ -414,7 +401,6 @@ public class wTeacher extends JFrame {
                 previousColumn = table.getSelectedColumn();
             }
         });
-
 
         dtm.addTableModelListener(new TableModelListener() {
 
@@ -592,7 +578,20 @@ public class wTeacher extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
+                boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
+
+                if (answersAreHidden) {
+                    answersWereHidden = true;
+                }
+                showAnswers();
+
                 changeColumns(false);
+
+                if (answersWereHidden) {
+                    hideAnswers();
+                }
+
 
             }
         });
@@ -767,34 +766,16 @@ public class wTeacher extends JFrame {
                 int j = 0;
                 for (Collocation collocation : listOfFavoriteWords) {
                     listDictionary.add(j, collocation);
-                    dtm.addRow(new Object[0]);
-                    dtm.setValueAt(collocation.learnedEn, j, 0);
-                    dtm.setValueAt(collocation.en, j, 1);
-                    dtm.setValueAt(collocation.learnedRu, j, 2);
-                    dtm.setValueAt(collocation.ru, j, 3);
-                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
                 for (Collocation collocation : listOfStudiedWords) {
                     listDictionary.add(j, collocation);
-                    dtm.addRow(new Object[0]);
-                    dtm.setValueAt(collocation.learnedEn, j, 0);
-                    dtm.setValueAt(collocation.en, j, 1);
-                    dtm.setValueAt(collocation.learnedRu, j, 2);
-                    dtm.setValueAt(collocation.ru, j, 3);
-                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
                 for (Collocation collocation : listDictionary) {
                     if (collocation.learnedEn == collocation.learnedRu) {
-                        dtm.addRow(new Object[0]);
-                        dtm.setValueAt(collocation.learnedEn, j, 0);
-                        dtm.setValueAt(collocation.en, j, 1);
-                        dtm.setValueAt(collocation.learnedRu, j, 2);
-                        dtm.setValueAt(collocation.ru, j, 3);
-                        dtm.setValueAt(collocation.index, j, 4);
                         j++;
                     }
                     rowBeginIndexOfLearnedWords = j;
@@ -802,14 +783,7 @@ public class wTeacher extends JFrame {
                 countOfDifficultWords = 0;
                 for (Collocation collocation : listOfDifficultWords) {
                     countOfDifficultWords++;
-
                     listDictionary.add(collocation);
-                    dtm.addRow(new Object[0]);
-                    dtm.setValueAt(collocation.learnedEn, j, 0);
-                    dtm.setValueAt(collocation.en, j, 1);
-                    dtm.setValueAt(collocation.learnedRu, j, 2);
-                    dtm.setValueAt(collocation.ru, j, 3);
-                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
@@ -822,12 +796,6 @@ public class wTeacher extends JFrame {
                         listOfWellLearnedWords.add(collocation);
                     } else {
                         listDictionary.add(collocation);
-                        dtm.addRow(new Object[0]);
-                        dtm.setValueAt(collocation.learnedEn, j, 0);
-                        dtm.setValueAt(collocation.en, j, 1);
-                        dtm.setValueAt(collocation.learnedRu, j, 2);
-                        dtm.setValueAt(collocation.ru, j, 3);
-                        dtm.setValueAt(collocation.index, j, 4);
                         j++;
                         rowBeginIndexOfWellLearnedWords = j;
                     }
@@ -836,14 +804,9 @@ public class wTeacher extends JFrame {
                 progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
                 for (Collocation collocation : listOfWellLearnedWords) {
                     listDictionary.add(collocation);
-                    dtm.addRow(new Object[0]);
-                    dtm.setValueAt(collocation.learnedEn, j, 0);
-                    dtm.setValueAt(collocation.en, j, 1);
-                    dtm.setValueAt(collocation.learnedRu, j, 2);
-                    dtm.setValueAt(collocation.ru, j, 3);
-                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                 }
+                defineIndexesOfWords();
 
                 labelNumberOfLearnedWords.setText("learned: " + Integer.toString(countOfLearnedWords));
                 labelNumberOfDifficultWords.setText("difficult: " + Integer.toString(countOfDifficultWords));
@@ -856,6 +819,10 @@ public class wTeacher extends JFrame {
                 prefs.putInt("countOfLeftWords", listDictionary.size() - countOfLearnedWords);
                 prefs.putInt("countOfTotalWords", listDictionary.size());
 
+                setDataVector();
+                if (!prefs.getBoolean("englishLeft", true)) {
+                    changeColumns(true);
+                }
 
                 boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
                 if (answersWereHidden) {
@@ -924,36 +891,18 @@ public class wTeacher extends JFrame {
                 int j = 0;
                 for (Collocation collocation : listOfFavoriteWords) {
                     listDictionary.add(j, collocation);
-                    dtm.addRow(new Object[0]);
-                    dtm.setValueAt(collocation.learnedEn, j, 0);
-                    dtm.setValueAt(collocation.en, j, 1);
-                    dtm.setValueAt(collocation.learnedRu, j, 2);
-                    dtm.setValueAt(collocation.ru, j, 3);
-                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
 
                 for (Collocation collocation : listOfStudiedWords) {
                     listDictionary.add(j, collocation);
-                    dtm.addRow(new Object[0]);
-                    dtm.setValueAt(collocation.learnedEn, j, 0);
-                    dtm.setValueAt(collocation.en, j, 1);
-                    dtm.setValueAt(collocation.learnedRu, j, 2);
-                    dtm.setValueAt(collocation.ru, j, 3);
-                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
 
                 for (Collocation collocation : listDictionary) {
                     if (collocation.learnedEn == collocation.learnedRu) {
-                        dtm.addRow(new Object[0]);
-                        dtm.setValueAt(collocation.learnedEn, j, 0);
-                        dtm.setValueAt(collocation.en, j, 1);
-                        dtm.setValueAt(collocation.learnedRu, j, 2);
-                        dtm.setValueAt(collocation.ru, j, 3);
-                        dtm.setValueAt(collocation.index, j, 4);
                         j++;
                     }
                     rowBeginIndexOfLearnedWords = j;
@@ -962,12 +911,6 @@ public class wTeacher extends JFrame {
                 for (Collocation collocation : listOfDifficultWords) {
                     countOfDifficultWords++;
                     listDictionary.add(collocation);
-                    dtm.addRow(new Object[0]);
-                    dtm.setValueAt(collocation.learnedEn, j, 0);
-                    dtm.setValueAt(collocation.en, j, 1);
-                    dtm.setValueAt(collocation.learnedRu, j, 2);
-                    dtm.setValueAt(collocation.ru, j, 3);
-                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
@@ -980,12 +923,6 @@ public class wTeacher extends JFrame {
                         listOfWellLearnedWords.add(collocation);
                     } else {
                         listDictionary.add(collocation);
-                        dtm.addRow(new Object[0]);
-                        dtm.setValueAt(collocation.learnedEn, j, 0);
-                        dtm.setValueAt(collocation.en, j, 1);
-                        dtm.setValueAt(collocation.learnedRu, j, 2);
-                        dtm.setValueAt(collocation.ru, j, 3);
-                        dtm.setValueAt(collocation.index, j, 4);
                         j++;
                         rowBeginIndexOfWellLearnedWords = j;
                     }
@@ -995,14 +932,9 @@ public class wTeacher extends JFrame {
                 Collections.shuffle(listOfWellLearnedWords);
                 for (Collocation collocation : listOfWellLearnedWords) {
                     listDictionary.add(collocation);
-                    dtm.addRow(new Object[0]);
-                    dtm.setValueAt(collocation.learnedEn, j, 0);
-                    dtm.setValueAt(collocation.en, j, 1);
-                    dtm.setValueAt(collocation.learnedRu, j, 2);
-                    dtm.setValueAt(collocation.ru, j, 3);
-                    dtm.setValueAt(collocation.index, j, 4);
                     j++;
                 }
+                defineIndexesOfWords();
 
                 labelNumberOfLearnedWords.setText("learned: " + Integer.toString(countOfLearnedWords));
                 labelNumberOfDifficultWords.setText("difficult: " + Integer.toString(countOfDifficultWords));
@@ -1015,6 +947,10 @@ public class wTeacher extends JFrame {
                 prefs.putInt("countOfLeftWords", listDictionary.size() - countOfLearnedWords);
                 prefs.putInt("countOfTotalWords", listDictionary.size());
 
+                setDataVector();
+                if (!prefs.getBoolean("englishLeft", true)) {
+                    changeColumns(true);
+                }
 
                 boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
                 if (answersWereHidden) {
@@ -1742,7 +1678,6 @@ public class wTeacher extends JFrame {
         columnModel.getColumn(4).setMaxWidth(0);
         columnModel.getColumn(4).setPreferredWidth(0);
 
-
     }
 
     private void setRowFilter(String text) {
@@ -1907,12 +1842,10 @@ public class wTeacher extends JFrame {
 
         List<String> lines = null;
         try {
-            lines = Files.readAllLines(filePath, Charset.forName("UTF-8"));//"UTF-8"));
+            lines = Files.readAllLines(filePath, Charset.forName("UTF-8"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //for (String str : lines){
 
         if (lines.size() > 0) {
             String str = lines.get(0);
@@ -1930,21 +1863,10 @@ public class wTeacher extends JFrame {
             }
         }
 
-        //}
-
         if (listDictionary.size() == 0) {
             resetListDictionary();
         }else{
-            int index = 0;
-            for (Collocation i : listDictionary) {
-                dtm.addRow(new Object[0]);
-                dtm.setValueAt(i.learnedEn, index, 0);
-                dtm.setValueAt(i.en, index, 1);
-                dtm.setValueAt(i.learnedRu, index, 2);
-                dtm.setValueAt(i.ru, index, 3);
-                dtm.setValueAt(i.index, index, 4);
-                index++;
-            }
+            setDataVector();
         }
 
     }
@@ -1960,11 +1882,6 @@ public class wTeacher extends JFrame {
         Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
         boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
 
-        if (answersAreHidden) {
-            answersWereHidden = true;
-        }
-        showAnswers();
-
         if (softwareChange) {
             englishLeft = prefs.getBoolean("englishLeft", englishLeft);
         } else {
@@ -1979,10 +1896,6 @@ public class wTeacher extends JFrame {
         // Перемещение столбцов
         finalColumnModel.moveColumn(first, last);
         finalColumnModel.moveColumn(first, last);
-
-        if (answersWereHidden) {
-            hideAnswers();
-        }
 
         movingColumns = false;
 
@@ -2025,24 +1938,15 @@ public class wTeacher extends JFrame {
         }
 
         listDictionary.clear();
-        table.clearSelection();
-        dtm.getDataVector().clear();
+
         int index = 0;
         for (int i = 0; i < lines.size(); i += 2) {
             listDictionary.add(new Collocation(false, lines.get(i), false, lines.get(i + 1), false, index));
             index++;
         }
 
-        index = 0;
-        for (Collocation i : listDictionary) {
-            dtm.addRow(new Object[0]);
-            dtm.setValueAt(i.learnedEn, index, 0);
-            dtm.setValueAt(i.en, index, 1);
-            dtm.setValueAt(i.learnedRu, index, 2);
-            dtm.setValueAt(i.ru, index, 3);
-            dtm.setValueAt(i.index, index, 4);
-            index++;
-        }
+        setDataVector();
+        englishLeft = true;
 
         answersAreHidden = false;
         progressBar.setValue(0);
@@ -2054,6 +1958,7 @@ public class wTeacher extends JFrame {
         Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
 
         prefs.putBoolean("answersWereHidden", answersAreHidden);
+        prefs.putBoolean("englishLeft", englishLeft);
 
         prefs.putInt("countOfLearnedWords", 0);
         prefs.putInt("countOfDifficultWords", 0);
@@ -2257,6 +2162,27 @@ public class wTeacher extends JFrame {
         saveWordsForKeyboardSimulator();
     }
 
+    public void setDataVector(){
+
+        String headers[] = { "", "En", "", "Ru", "index" };
+        Object[][] rows = new Object[listDictionary.size()][headers.length];
+        int index = 0;
+        for (Collocation collocation : listDictionary) {
+            Object[] data = new Object[headers.length];
+            data[0] = collocation.learnedEn;
+            data[1] = collocation.en;
+            data[2] = collocation.learnedRu;
+            data[3] = collocation.ru;
+            data[4] = collocation.index;
+
+            rows[index++] = data;
+        }
+
+        dtm.setDataVector(rows, headers);
+        setColumnWidth();
+
+    }
+
     class Sender extends Thread {
         Socket socket;
         int senderNumber;
@@ -2304,11 +2230,19 @@ public class wTeacher extends JFrame {
                     listDictionary.clear();
                     table.clearSelection();
                     dtm.getDataVector().clear();
+                    //dtm.setRowCount(0);
+                    //dtm.getDataVector().removeAllElements();
+                    //dtm.fireTableDataChanged();
                     for (int i = 0; i < array.size(); i++) {
                         Collocation collocation = (gson.fromJson(array.get(i), Collocation.class));
                         listDictionary.add(collocation);
                     }
 
+                    setDataVector();
+
+
+
+                    /*
                     int index = 0;
                     for (Collocation i : listDictionary) {
                         dtm.addRow(new Object[0]);
@@ -2319,6 +2253,7 @@ public class wTeacher extends JFrame {
                         dtm.setValueAt(i.index, index, 4);
                         index++;
                     }
+                    */
 
                     defineIndexesOfWords();
                     answersAreHidden = false;
@@ -2356,6 +2291,7 @@ public class wTeacher extends JFrame {
             }
         }
     }
+
 
 
     public class EditorPaneRenderer extends JTextPane implements TableCellRenderer {
