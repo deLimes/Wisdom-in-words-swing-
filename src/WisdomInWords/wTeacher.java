@@ -273,14 +273,6 @@ public class wTeacher extends JFrame {
                     rComp.setBackground(getBackground());
                 }
 
-                /*
-                int index = rowIndex;
-                try {
-                    index = (Integer) table.getValueAt(rowIndex, 4);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                */
                 int index = (Integer) table.getValueAt(rowIndex, 4);
                 Collocation collocation = listDictionary.get(index);
                 if (listDictionary.size() > 0 && collocation.isDifficult) {
@@ -501,7 +493,8 @@ public class wTeacher extends JFrame {
 
                     String content = v.toString();
 
-                    if (rowChanged || columnChanged || hideAnswers || showAnswers
+                    if ((rowChanged && !filterChanged) || (columnChanged && !filterChanged)
+                            || hideAnswers || showAnswers
                             || content.isEmpty() || content.contains("✓") || content.contains("⚓") ) {
 
                         rowChanged = columnChanged = false;
@@ -2019,14 +2012,14 @@ public class wTeacher extends JFrame {
         }
 
         listDictionary.clear();
+        table.clearSelection();
+        dtm.getDataVector().clear();
         int index = 0;
         for (int i = 0; i < lines.size(); i += 2) {
             listDictionary.add(new Collocation(false, lines.get(i), false, lines.get(i + 1), false, index));
             index++;
         }
 
-        table.clearSelection();
-        dtm.getDataVector().clear();
         index = 0;
         for (Collocation i : listDictionary) {
             dtm.addRow(new Object[0]);
@@ -2038,6 +2031,7 @@ public class wTeacher extends JFrame {
             index++;
         }
 
+        answersAreHidden = false;
         progressBar.setValue(0);
         labelNumberOfLearnedWords.setText("learned: 0");
         labelNumberOfDifficultWords.setText("difficult: 0");
@@ -2045,6 +2039,8 @@ public class wTeacher extends JFrame {
         labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
 
         Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
+
+        prefs.putBoolean("answersWereHidden", answersAreHidden);
 
         prefs.putInt("countOfLearnedWords", 0);
         prefs.putInt("countOfDifficultWords", 0);
@@ -2298,16 +2294,21 @@ public class wTeacher extends JFrame {
                     for (int i = 0; i < array.size(); i++) {
                         Collocation collocation = (gson.fromJson(array.get(i), Collocation.class));
                         listDictionary.add(collocation);
+                    }
 
+                    int index = 0;
+                    for (Collocation i : listDictionary) {
                         dtm.addRow(new Object[0]);
-                        dtm.setValueAt(collocation.learnedEn, i, 0);
-                        dtm.setValueAt(collocation.en, i, 1);
-                        dtm.setValueAt(collocation.learnedRu, i, 2);
-                        dtm.setValueAt(collocation.ru, i, 3);
-                        dtm.setValueAt(collocation.index, i, 4);
+                        dtm.setValueAt(i.learnedEn, index, 0);
+                        dtm.setValueAt(i.en, index, 1);
+                        dtm.setValueAt(i.learnedRu, index, 2);
+                        dtm.setValueAt(i.ru, index, 3);
+                        dtm.setValueAt(i.index, index, 4);
+                        index++;
                     }
 
                     defineIndexesOfWords();
+                    answersAreHidden = false;
                     progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
 
                     labelNumberOfLearnedWords.setText("learned: " + Integer.toString(countOfLearnedWords));
@@ -2316,6 +2317,8 @@ public class wTeacher extends JFrame {
                     labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
 
                     Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
+                    prefs.putBoolean("answersWereHidden", answersAreHidden);
+
                     prefs.putInt("countOfLearnedWords", countOfLearnedWords);
                     prefs.putInt("countOfDifficultWords", countOfDifficultWords);
                     prefs.putInt("countOfLeftWords", listDictionary.size() - countOfLearnedWords);
