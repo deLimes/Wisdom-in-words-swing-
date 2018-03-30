@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
+import javax.imageio.ImageIO;
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.*;
 import javax.swing.Timer;
@@ -14,6 +15,7 @@ import javax.swing.table.*;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
@@ -56,7 +58,7 @@ public class wTeacher extends JFrame {
     JTextField jtfFilterValue;
     JProgressBar progressBar = new JProgressBar();
     String MASSAGE_WRONG_FORMAT = "Use format: [ENword][~][RUword]";
-    String title = "    ILEW - I Lern English Words";
+    String title = "Wisdom in words";
     JLabel labelTitle = new JLabel(title);
     JLabel labelNumberOfLearnedWords = new JLabel("");
     JLabel labelNumberOfDifficultWords = new JLabel("");
@@ -190,7 +192,18 @@ public class wTeacher extends JFrame {
                 frame.setLocation(currCoords.x - compCoords.x, currCoords.y - compCoords.y);
             }
         });
+
+        BufferedImage wPic = null;
+        try {
+            wPic = ImageIO.read(this.getClass().getResource("/ic_launcher.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JLabel wIcon = new JLabel(new ImageIcon(wPic));
+
+        a.add(wIcon);
         a.add(labelTitle);
+        //a.add(wIcon);
 
         c.add(btnHelp);
         c.add(btnMinimize);
