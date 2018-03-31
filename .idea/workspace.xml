@@ -36,8 +36,8 @@
       <file leaf-file-name="wTeacher.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.57336956" vertical-offset="35897" max-vertical-offset="42211">
-              <caret line="2243" column="22" selection-start-line="2243" selection-start-column="22" selection-end-line="2243" selection-end-column="22" />
+            <state vertical-scroll-proportion="0.7472826" vertical-offset="26517" max-vertical-offset="42381">
+              <caret line="1688" column="8" selection-start-line="1688" selection-start-column="8" selection-end-line="1688" selection-end-column="8" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -554,43 +554,43 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>2126</line>
+          <line>2136</line>
           <properties />
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1572</line>
+          <line>1582</line>
           <properties />
           <option name="timeStamp" value="45" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1799</line>
+          <line>1809</line>
           <properties />
           <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>2423</line>
+          <line>2433</line>
           <properties />
           <option name="timeStamp" value="69" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>2430</line>
+          <line>2440</line>
           <properties />
           <option name="timeStamp" value="74" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>2411</line>
+          <line>2421</line>
           <properties />
           <option name="timeStamp" value="76" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1284</line>
+          <line>1294</line>
           <properties />
           <option name="timeStamp" value="81" />
         </line-breakpoint>
@@ -602,7 +602,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1888</line>
+          <line>1898</line>
           <properties />
           <option name="timeStamp" value="125" />
         </line-breakpoint>
@@ -650,24 +650,60 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>1127</line>
+          <line>1137</line>
           <properties />
           <option name="timeStamp" value="149" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>2231</line>
+          <line>2241</line>
           <properties />
           <option name="timeStamp" value="152" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>2242</line>
+          <line>2252</line>
           <properties />
           <option name="timeStamp" value="154" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
+          <line>897</line>
+          <properties />
+          <option name="timeStamp" value="157" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
+          <line>904</line>
+          <properties />
+          <option name="timeStamp" value="158" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
+          <line>920</line>
+          <properties />
+          <option name="timeStamp" value="163" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
+          <line>933</line>
+          <properties />
+          <option name="timeStamp" value="164" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
+          <line>943</line>
+          <properties />
+          <option name="timeStamp" value="165" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
+          <line>959</line>
+          <properties />
+          <option name="timeStamp" value="167" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="156" />
+      <option name="time" value="169" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
@@ -1109,8 +1145,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.57336956" vertical-offset="35897" max-vertical-offset="42211">
-          <caret line="2243" column="22" selection-start-line="2243" selection-start-column="22" selection-end-line="2243" selection-end-column="22" />
+        <state vertical-scroll-proportion="0.7472826" vertical-offset="26517" max-vertical-offset="42381">
+          <caret line="1688" column="8" selection-start-line="1688" selection-start-column="8" selection-end-line="1688" selection-end-column="8" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

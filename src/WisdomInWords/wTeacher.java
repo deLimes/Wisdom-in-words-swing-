@@ -765,17 +765,20 @@ public class wTeacher extends JFrame {
 
                 int j = 0;
                 for (Collocation collocation : listOfFavoriteWords) {
+                    collocation.index = j;
                     listDictionary.add(j, collocation);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
                 for (Collocation collocation : listOfStudiedWords) {
+                    collocation.index = j;
                     listDictionary.add(j, collocation);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
                 for (Collocation collocation : listDictionary) {
                     if (collocation.learnedEn == collocation.learnedRu) {
+                        collocation.index = j;
                         j++;
                     }
                     rowBeginIndexOfLearnedWords = j;
@@ -783,6 +786,7 @@ public class wTeacher extends JFrame {
                 countOfDifficultWords = 0;
                 for (Collocation collocation : listOfDifficultWords) {
                     countOfDifficultWords++;
+                    collocation.index = j;
                     listDictionary.add(collocation);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
@@ -795,6 +799,7 @@ public class wTeacher extends JFrame {
                     if (j >= rowBeginIndexOfLearnedWords + numberOfBlocks * numberOfCollocationsInABlock) {
                         listOfWellLearnedWords.add(collocation);
                     } else {
+                        collocation.index = j;
                         listDictionary.add(collocation);
                         j++;
                         rowBeginIndexOfWellLearnedWords = j;
@@ -803,10 +808,10 @@ public class wTeacher extends JFrame {
                 rowBeginIndexOfNativeWords = rowBeginIndexOfWellLearnedWords + numberOfBlocks * numberOfCollocationsInABlock;
                 progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
                 for (Collocation collocation : listOfWellLearnedWords) {
+                    collocation.index = j;
                     listDictionary.add(collocation);
                     j++;
                 }
-                defineIndexesOfWords();
 
                 labelNumberOfLearnedWords.setText("learned: " + Integer.toString(countOfLearnedWords));
                 labelNumberOfDifficultWords.setText("difficult: " + Integer.toString(countOfDifficultWords));
@@ -890,12 +895,14 @@ public class wTeacher extends JFrame {
 
                 int j = 0;
                 for (Collocation collocation : listOfFavoriteWords) {
+                    collocation.index = j;
                     listDictionary.add(j, collocation);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
 
                 for (Collocation collocation : listOfStudiedWords) {
+                    collocation.index = j;
                     listDictionary.add(j, collocation);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
@@ -903,6 +910,7 @@ public class wTeacher extends JFrame {
 
                 for (Collocation collocation : listDictionary) {
                     if (collocation.learnedEn == collocation.learnedRu) {
+                        collocation.index = j;
                         j++;
                     }
                     rowBeginIndexOfLearnedWords = j;
@@ -910,6 +918,7 @@ public class wTeacher extends JFrame {
                 countOfDifficultWords = 0;
                 for (Collocation collocation : listOfDifficultWords) {
                     countOfDifficultWords++;
+                    collocation.index = j;
                     listDictionary.add(collocation);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
@@ -922,6 +931,7 @@ public class wTeacher extends JFrame {
                     if (j >= rowBeginIndexOfLearnedWords + numberOfBlocks * numberOfCollocationsInABlock) {
                         listOfWellLearnedWords.add(collocation);
                     } else {
+                        collocation.index = j;
                         listDictionary.add(collocation);
                         j++;
                         rowBeginIndexOfWellLearnedWords = j;
@@ -931,10 +941,10 @@ public class wTeacher extends JFrame {
                 progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
                 Collections.shuffle(listOfWellLearnedWords);
                 for (Collocation collocation : listOfWellLearnedWords) {
+                    collocation.index = j;
                     listDictionary.add(collocation);
                     j++;
                 }
-                defineIndexesOfWords();
 
                 labelNumberOfLearnedWords.setText("learned: " + Integer.toString(countOfLearnedWords));
                 labelNumberOfDifficultWords.setText("difficult: " + Integer.toString(countOfDifficultWords));
@@ -2166,7 +2176,7 @@ public class wTeacher extends JFrame {
 
         String headers[] = { "", "En", "", "Ru", "index" };
         Object[][] rows = new Object[listDictionary.size()][headers.length];
-        int index = 0;
+        int j = 0;
         for (Collocation collocation : listDictionary) {
             Object[] data = new Object[headers.length];
             data[0] = collocation.learnedEn;
@@ -2175,7 +2185,7 @@ public class wTeacher extends JFrame {
             data[3] = collocation.ru;
             data[4] = collocation.index;
 
-            rows[index++] = data;
+            rows[j++] = data;
         }
 
         dtm.setDataVector(rows, headers);
