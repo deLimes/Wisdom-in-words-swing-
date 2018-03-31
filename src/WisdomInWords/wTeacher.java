@@ -337,7 +337,6 @@ public class wTeacher extends JFrame {
 
         Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
 
-        countOfLearnedWords = prefs.getInt("countOfLearnedWords", 0);
         progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
 
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -345,12 +344,11 @@ public class wTeacher extends JFrame {
             public void valueChanged(ListSelectionEvent e) {
                 tableChanged = false;
                 rowChanged = true;
+
                 if (!filterChanged && previousRow != -1) {
                     dtm.fireTableCellUpdated(previousRow, previousColumn);
                 }
                 previousRow = table.getSelectedRow();
-
-
             }
         });
 
@@ -400,7 +398,8 @@ public class wTeacher extends JFrame {
                         || listDictionary.size() == 0
                         || movingColumns
                         || previousRow == -1
-                        || ignoreTableChange) {
+                        || ignoreTableChange
+                        ) {
 
                     return;
                 }
@@ -409,6 +408,9 @@ public class wTeacher extends JFrame {
 
                 Object v = dtm.getValueAt(indexOfTheSelectedRow, indexConvertOfTheSelectedColumn);
                 Collocation collocation = listDictionary.get(indexOfTheSelectedRow);
+                boolean isDifficultTemp = collocation.isDifficult;
+                boolean learnedEnTemp = collocation.learnedEn;
+                boolean learnedRuTemp = collocation.learnedRu;
 
                 if ((v instanceof Boolean)) {
 
@@ -424,6 +426,16 @@ public class wTeacher extends JFrame {
 
                             collocation.learnedEn = collocation.learnedRu = false;
                             table.setValueAt(false, indexOfTheFilteredSelectedRow, 2);
+
+                            if((learnedEnTemp && learnedRuTemp)) {
+                                labelNumberOfWordsLeft.setText("left: " + (listDictionary.size() - countOfLearnedWords + 1));
+                                labelNumberOfLearnedWords.setText("learned: " + --countOfLearnedWords);
+                                learnedEnTemp = false;
+                            }
+                        }
+                        if(learnedEnTemp && learnedRuTemp && !(Boolean) v){
+                            labelNumberOfWordsLeft.setText("left: " + (listDictionary.size() - countOfLearnedWords + 1));
+                            labelNumberOfLearnedWords.setText("learned: " + --countOfLearnedWords);
                         }
                     } else if (indexOfTheSelectedColumn == 2) {
                         if (englishLeft) {
@@ -437,6 +449,16 @@ public class wTeacher extends JFrame {
 
                             collocation.learnedEn = collocation.learnedRu = true;
                             table.setValueAt(true, indexOfTheFilteredSelectedRow, 0);
+
+                            if(!(learnedEnTemp && learnedRuTemp)) {
+                                labelNumberOfWordsLeft.setText("left: " + (listDictionary.size() - countOfLearnedWords - 1));
+                                labelNumberOfLearnedWords.setText("learned: " + ++countOfLearnedWords);
+                                learnedEnTemp = false;
+                            }
+                        }
+                        if(learnedEnTemp && learnedRuTemp && !(Boolean) v){
+                            labelNumberOfWordsLeft.setText("left: " + (listDictionary.size() - countOfLearnedWords + 1));
+                            labelNumberOfLearnedWords.setText("learned: " + --countOfLearnedWords);
                         }
                     }
 
@@ -516,6 +538,9 @@ public class wTeacher extends JFrame {
 
                         if (!englishLeft) {
                             collocation.isDifficult = false;
+                            if(isDifficultTemp != collocation.isDifficult){
+                                labelNumberOfDifficultWords.setText("difficult: " + --countOfDifficultWords);
+                            }
                         }
                     } else {
                         if (englishLeft) {
@@ -523,6 +548,9 @@ public class wTeacher extends JFrame {
                         } else {
                             resultText = original + "⚓";
                             collocation.isDifficult = true;
+                            if(isDifficultTemp != collocation.isDifficult){
+                                labelNumberOfDifficultWords.setText("difficult: " + ++countOfDifficultWords);
+                            }
 
                             startStopTimer(false, true);
                         }
@@ -1773,6 +1801,7 @@ public class wTeacher extends JFrame {
             Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
             englishLeft = prefs.getBoolean("englishLeft", true);
             answersAreHidden = prefs.getBoolean("answersWereHidden", false);
+            countOfLearnedWords = prefs.getInt("countOfLearnedWords", 0);
             updateTable();
 
             labelNumberOfLearnedWords.setText("learned: " + Integer.toString(prefs.getInt("countOfLearnedWords", 0)));
@@ -2056,16 +2085,13 @@ public class wTeacher extends JFrame {
         prefs.putInt("selectedRow", table.getSelectedRow());
         prefs.putInt("countOfLearnedWords", countOfLearnedWords);
 
-        //sort/shuffle
         prefs.putInt("countOfLearnedWords", countOfLearnedWords);
         prefs.putInt("countOfDifficultWords", countOfDifficultWords);
         prefs.putInt("countOfLeftWords", listDictionary.size() - countOfLearnedWords);
         prefs.putInt("countOfTotalWords", listDictionary.size());
-        //sinc
-        prefs.putBoolean("answersWereHidden", answersAreHidden);
 
-        //reset
         prefs.putBoolean("englishLeft", englishLeft);
+        prefs.putBoolean("answersWereHidden", answersAreHidden);
 
         saveListDictionary();
         saveWordsForKeyboardSimulator();
