@@ -334,26 +334,11 @@ public class wTeacher extends JFrame {
         table.setSurrendersFocusOnKeystroke(true);
 
         restoreListDictionary();
-        defineIndexesOfWords();
 
         Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
 
-        labelNumberOfLearnedWords.setText("learned: " + Integer.toString(prefs.getInt("countOfLearnedWords", 0)));
-        labelNumberOfDifficultWords.setText("difficult: " + Integer.toString(prefs.getInt("countOfDifficultWords", 0)));
-        labelNumberOfWordsLeft.setText("left: " + Integer.toString(prefs.getInt("countOfLeftWords", 0)));
-        labelNumberOfWordsTotal.setText("total: " + Integer.toString(prefs.getInt("countOfTotalWords", 0)));
-
         countOfLearnedWords = prefs.getInt("countOfLearnedWords", 0);
         progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
-
-        if (englishLeft != prefs.getBoolean("englishLeft", true)) {
-            changeColumns(true);
-        }
-
-        final boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
-        if (answersWereHidden) {
-            hideAnswers();
-        }
 
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -578,12 +563,8 @@ public class wTeacher extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-                boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
+                boolean answersWereHidden = answersAreHidden;
 
-                if (answersAreHidden) {
-                    answersWereHidden = true;
-                }
                 showAnswers();
 
                 changeColumns(false);
@@ -762,20 +743,17 @@ public class wTeacher extends JFrame {
 
                 int j = 0;
                 for (Collocation collocation : listOfFavoriteWords) {
-                    collocation.index = j;
                     listDictionary.add(j, collocation);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
                 for (Collocation collocation : listOfStudiedWords) {
-                    collocation.index = j;
                     listDictionary.add(j, collocation);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
                 for (Collocation collocation : listDictionary) {
                     if (collocation.learnedEn == collocation.learnedRu) {
-                        collocation.index = j;
                         j++;
                     }
                     rowBeginIndexOfLearnedWords = j;
@@ -783,7 +761,6 @@ public class wTeacher extends JFrame {
                 countOfDifficultWords = 0;
                 for (Collocation collocation : listOfDifficultWords) {
                     countOfDifficultWords++;
-                    collocation.index = j;
                     listDictionary.add(collocation);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
@@ -796,7 +773,6 @@ public class wTeacher extends JFrame {
                     if (j >= rowBeginIndexOfLearnedWords + numberOfBlocks * numberOfCollocationsInABlock) {
                         listOfWellLearnedWords.add(collocation);
                     } else {
-                        collocation.index = j;
                         listDictionary.add(collocation);
                         j++;
                         rowBeginIndexOfWellLearnedWords = j;
@@ -805,7 +781,6 @@ public class wTeacher extends JFrame {
                 rowBeginIndexOfNativeWords = rowBeginIndexOfWellLearnedWords + numberOfBlocks * numberOfCollocationsInABlock;
                 progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
                 for (Collocation collocation : listOfWellLearnedWords) {
-                    collocation.index = j;
                     listDictionary.add(collocation);
                     j++;
                 }
@@ -815,21 +790,7 @@ public class wTeacher extends JFrame {
                 labelNumberOfWordsLeft.setText("left: " + Integer.toString(listDictionary.size() - countOfLearnedWords));
                 labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
 
-                Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-                prefs.putInt("countOfLearnedWords", countOfLearnedWords);
-                prefs.putInt("countOfDifficultWords", countOfDifficultWords);
-                prefs.putInt("countOfLeftWords", listDictionary.size() - countOfLearnedWords);
-                prefs.putInt("countOfTotalWords", listDictionary.size());
-
-                setDataVector();
-                if (!prefs.getBoolean("englishLeft", true)) {
-                    changeColumns(true);
-                }
-
-                boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
-                if (answersWereHidden) {
-                    hideAnswers();
-                }
+                updateTable();
 
                 swap = false;
                 btnSwap.setBackground(btnHide.getBackground());
@@ -889,14 +850,12 @@ public class wTeacher extends JFrame {
 
                 int j = 0;
                 for (Collocation collocation : listOfFavoriteWords) {
-                    collocation.index = j;
                     listDictionary.add(j, collocation);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
                 }
 
                 for (Collocation collocation : listOfStudiedWords) {
-                    collocation.index = j;
                     listDictionary.add(j, collocation);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
@@ -904,7 +863,6 @@ public class wTeacher extends JFrame {
 
                 for (Collocation collocation : listDictionary) {
                     if (collocation.learnedEn == collocation.learnedRu) {
-                        collocation.index = j;
                         j++;
                     }
                     rowBeginIndexOfLearnedWords = j;
@@ -912,7 +870,6 @@ public class wTeacher extends JFrame {
                 countOfDifficultWords = 0;
                 for (Collocation collocation : listOfDifficultWords) {
                     countOfDifficultWords++;
-                    collocation.index = j;
                     listDictionary.add(collocation);
                     j++;
                     rowBeginIndexOfLearnedWords = j;
@@ -925,7 +882,6 @@ public class wTeacher extends JFrame {
                     if (j >= rowBeginIndexOfLearnedWords + numberOfBlocks * numberOfCollocationsInABlock) {
                         listOfWellLearnedWords.add(collocation);
                     } else {
-                        collocation.index = j;
                         listDictionary.add(collocation);
                         j++;
                         rowBeginIndexOfWellLearnedWords = j;
@@ -935,7 +891,6 @@ public class wTeacher extends JFrame {
                 progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
                 Collections.shuffle(listOfWellLearnedWords);
                 for (Collocation collocation : listOfWellLearnedWords) {
-                    collocation.index = j;
                     listDictionary.add(collocation);
                     j++;
                 }
@@ -945,21 +900,7 @@ public class wTeacher extends JFrame {
                 labelNumberOfWordsLeft.setText("left: " + Integer.toString(listDictionary.size() - countOfLearnedWords));
                 labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
 
-                Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-                prefs.putInt("countOfLearnedWords", countOfLearnedWords);
-                prefs.putInt("countOfDifficultWords", countOfDifficultWords);
-                prefs.putInt("countOfLeftWords", listDictionary.size() - countOfLearnedWords);
-                prefs.putInt("countOfTotalWords", listDictionary.size());
-
-                setDataVector();
-                if (!prefs.getBoolean("englishLeft", true)) {
-                    changeColumns(true);
-                }
-
-                boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
-                if (answersWereHidden) {
-                    hideAnswers();
-                }
+                updateTable();
 
                 swap = false;
                 btnSwap.setBackground(btnHide.getBackground());
@@ -1171,7 +1112,6 @@ public class wTeacher extends JFrame {
 
                 if (text.isEmpty()){
                     scrollToRow(selectedRow);
-                    defineIndexesOfWords();
                     if (answersAreHidden) {
                         hideAnswers();
                     }
@@ -1224,26 +1164,11 @@ public class wTeacher extends JFrame {
 
                     jtfFilterValue.setText("");
                     setRowFilter("");
-                    defineIndexesOfWords();
-                    setDataVector();
-                    Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-                    if (!prefs.getBoolean("englishLeft", true)) {
-                        changeColumns(true);
-                    }
 
-                    boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
-                    if (answersWereHidden) {
-                        hideAnswers();
-                    }
+                    updateTable();
 
-                    int countOfLeftWords = prefs.getInt("countOfLeftWords", 0);
-
-                    countOfLeftWords++;
-                    labelNumberOfWordsLeft.setText("left: " + Integer.toString(countOfLeftWords));
+                    labelNumberOfWordsLeft.setText("left: " + Integer.toString(listDictionary.size() - countOfLearnedWords));
                     labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
-
-                    prefs.putInt("countOfLeftWords", countOfLeftWords);
-                    prefs.putInt("countOfTotalWords", listDictionary.size());
 
                 } else {
                     showMessageDialog(MASSAGE_WRONG_FORMAT);
@@ -1281,28 +1206,13 @@ public class wTeacher extends JFrame {
                             collocation.index = i;
                         }
 
-                        defineIndexesOfWords();
-                        setDataVector();
-                        Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-                        if (!prefs.getBoolean("englishLeft", true)) {
-                            changeColumns(true);
-                        }
-
-                        boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
-                        if (answersWereHidden) {
-                            hideAnswers();
-                        }
+                        updateTable();
 
                         progressBar.setValue((0));
                         labelNumberOfLearnedWords.setText("learned: 0");
                         labelNumberOfDifficultWords.setText("difficult: 0");
                         labelNumberOfWordsLeft.setText("left: " + Integer.toString(listDictionary.size()));
                         labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
-
-                        prefs.putInt("countOfLearnedWords", 0);
-                        prefs.putInt("countOfDifficultWords", 0);
-                        prefs.putInt("countOfLeftWords", listDictionary.size());
-                        prefs.putInt("countOfTotalWords", listDictionary.size());
                     }
 
                     swap = false;
@@ -1311,8 +1221,9 @@ public class wTeacher extends JFrame {
                     return;
                 }
 
-                int indexOfTheSelectedRow = table.getSelectedRow();
-                if (indexOfTheSelectedRow != -1) {
+                int indexOfTheFilteredSelectedRow = table.getSelectedRow();
+                int indexOfTheSelectedRow = (Integer) table.getValueAt(indexOfTheFilteredSelectedRow, 4);
+                if (indexOfTheFilteredSelectedRow != -1) {
                     Collocation collocation = listDictionary.get(indexOfTheSelectedRow);
                     String strCollocation = collocation.en + "~" + collocation.ru;
                     int result = JOptionPane.showConfirmDialog(wTeacher.this,
@@ -1326,30 +1237,11 @@ public class wTeacher extends JFrame {
                         listDictionary.remove(indexOfTheSelectedRow);
                         dtm.removeRow(indexOfTheSelectedRow);
 
-                        defineIndexesOfWords();
-                        setDataVector();
-                        Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-                        if (!prefs.getBoolean("englishLeft", true)) {
-                            changeColumns(true);
-                        }
+                        updateTable();
 
-                        boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
-                        if (answersWereHidden) {
-                            hideAnswers();
-                        }
-
-                        int countOfLearnedWords = prefs.getInt("countOfLearnedWords", 0);
-                        int countOfLeftWords = prefs.getInt("countOfLeftWords", 0);
+                        labelNumberOfLearnedWords.setText("learned: " + Integer.toString(countOfLearnedWords));
+                        labelNumberOfWordsLeft.setText("left: " + Integer.toString(listDictionary.size() - countOfLearnedWords));
                         labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
-                        if (collocation.learnedEn && collocation.learnedRu) {
-                            countOfLearnedWords--;
-                            labelNumberOfLearnedWords.setText("lerned: " + Integer.toString(countOfLearnedWords));
-                        } else {
-                            countOfLeftWords--;
-                            labelNumberOfWordsLeft.setText("left: " + Integer.toString(countOfLeftWords));
-                        }
-                        prefs.putInt("countOfLeftWords", countOfLeftWords);
-                        prefs.putInt("countOfTotalWords", listDictionary.size());
 
                     }
                 }
@@ -1642,7 +1534,6 @@ public class wTeacher extends JFrame {
 
     private void hideAnswers() {
 
-
         hideAnswers = true;
         tableChanged = false;
 
@@ -1652,9 +1543,6 @@ public class wTeacher extends JFrame {
 
         hideAnswers = false;
         answersAreHidden = true;
-        Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-        prefs.putBoolean("answersWereHidden", answersAreHidden);
-
     }
 
     private void showAnswers() {
@@ -1677,9 +1565,6 @@ public class wTeacher extends JFrame {
             }
         }
         showAnswers = false;
-
-        Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-        prefs.putBoolean("answersWereHidden", answersAreHidden);
     }
 
     private void setColumnWidth() {
@@ -1689,9 +1574,9 @@ public class wTeacher extends JFrame {
         columnModel.getColumn(2).setMaxWidth(25);
         columnModel.getColumn(3).setMaxWidth(425);
 
-        columnModel.getColumn(4).setMinWidth(50);
-        columnModel.getColumn(4).setMaxWidth(50);
-        //columnModel.getColumn(4).setPreferredWidth(0);
+        columnModel.getColumn(4).setMinWidth(0);
+        columnModel.getColumn(4).setMaxWidth(0);
+        columnModel.getColumn(4).setPreferredWidth(0);
 
     }
 
@@ -1885,7 +1770,15 @@ public class wTeacher extends JFrame {
         if (listDictionary.size() == 0) {
             resetListDictionary();
         }else{
-            setDataVector();
+            Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
+            englishLeft = prefs.getBoolean("englishLeft", true);
+            answersAreHidden = prefs.getBoolean("answersWereHidden", false);
+            updateTable();
+
+            labelNumberOfLearnedWords.setText("learned: " + Integer.toString(prefs.getInt("countOfLearnedWords", 0)));
+            labelNumberOfDifficultWords.setText("difficult: " + Integer.toString(prefs.getInt("countOfDifficultWords", 0)));
+            labelNumberOfWordsLeft.setText("left: " + Integer.toString(prefs.getInt("countOfLeftWords", 0)));
+            labelNumberOfWordsTotal.setText("total: " + Integer.toString(prefs.getInt("countOfTotalWords", 0)));
         }
 
     }
@@ -1898,14 +1791,8 @@ public class wTeacher extends JFrame {
 
       //table.setColumnSelectionInterval(1, 1);
 
-        Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-        boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
-
-        if (softwareChange) {
-            englishLeft = prefs.getBoolean("englishLeft", englishLeft);
-        } else {
+        if (!softwareChange) {
             englishLeft = !englishLeft;
-            prefs.putBoolean("englishLeft", englishLeft);
         }
 
         // Индекс первой колоки
@@ -1965,24 +1852,16 @@ public class wTeacher extends JFrame {
         }
 
         setDataVector();
+        setColumnWidth();
+        defineIndexesOfWords();
         englishLeft = true;
-
         answersAreHidden = false;
         progressBar.setValue(0);
+
         labelNumberOfLearnedWords.setText("learned: 0");
         labelNumberOfDifficultWords.setText("difficult: 0");
         labelNumberOfWordsLeft.setText("left: " + Integer.toString(listDictionary.size()));
         labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
-
-        Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-
-        prefs.putBoolean("answersWereHidden", answersAreHidden);
-        prefs.putBoolean("englishLeft", englishLeft);
-
-        prefs.putInt("countOfLearnedWords", 0);
-        prefs.putInt("countOfDifficultWords", 0);
-        prefs.putInt("countOfLeftWords", listDictionary.size());
-        prefs.putInt("countOfTotalWords", listDictionary.size());
 
     }
 
@@ -2177,6 +2056,17 @@ public class wTeacher extends JFrame {
         prefs.putInt("selectedRow", table.getSelectedRow());
         prefs.putInt("countOfLearnedWords", countOfLearnedWords);
 
+        //sort/shuffle
+        prefs.putInt("countOfLearnedWords", countOfLearnedWords);
+        prefs.putInt("countOfDifficultWords", countOfDifficultWords);
+        prefs.putInt("countOfLeftWords", listDictionary.size() - countOfLearnedWords);
+        prefs.putInt("countOfTotalWords", listDictionary.size());
+        //sinc
+        prefs.putBoolean("answersWereHidden", answersAreHidden);
+
+        //reset
+        prefs.putBoolean("englishLeft", englishLeft);
+
         saveListDictionary();
         saveWordsForKeyboardSimulator();
     }
@@ -2185,8 +2075,10 @@ public class wTeacher extends JFrame {
 
         String headers[] = { "", "En", "", "Ru", "index" };
         Object[][] rows = new Object[listDictionary.size()][headers.length];
-        int j = 0;
+        int index = 0;
         for (Collocation collocation : listDictionary) {
+            collocation.index = index;
+
             Object[] data = new Object[headers.length];
             data[0] = collocation.learnedEn;
             data[1] = collocation.en;
@@ -2194,13 +2086,30 @@ public class wTeacher extends JFrame {
             data[3] = collocation.ru;
             data[4] = collocation.index;
 
-            rows[j++] = data;
+            rows[index++] = data;
         }
 
         dtm.setDataVector(rows, headers);
-        setColumnWidth();
 
     }
+
+    public void updateTable(){
+
+        defineIndexesOfWords();
+
+        setDataVector();
+
+        setColumnWidth();
+
+        if (!englishLeft) {
+            changeColumns(true);
+        }
+
+        if (answersAreHidden) {
+            hideAnswers();
+        }
+    }
+
 
     class Sender extends Thread {
         Socket socket;
@@ -2253,34 +2162,14 @@ public class wTeacher extends JFrame {
                         listDictionary.add(collocation);
                     }
 
-                    setDataVector();
+                    updateTable();
 
-                    defineIndexesOfWords();
-                    //answersAreHidden = false;
                     progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
 
                     labelNumberOfLearnedWords.setText("learned: " + Integer.toString(countOfLearnedWords));
                     labelNumberOfDifficultWords.setText("difficult: " + Integer.toString(countOfDifficultWords));
                     labelNumberOfWordsLeft.setText("left: " + Integer.toString(listDictionary.size() - countOfLearnedWords));
                     labelNumberOfWordsTotal.setText("total: " + Integer.toString(listDictionary.size()));
-
-                    Preferences prefs = Preferences.userNodeForPackage(wTeacher.class);
-                    if (!prefs.getBoolean("englishLeft", true)) {
-                        changeColumns(true);
-                    }
-
-                    boolean answersWereHidden = prefs.getBoolean("answersWereHidden", false);
-                    if (answersWereHidden) {
-                        hideAnswers();
-                    }
-
-                    prefs.putBoolean("answersWereHidden", answersAreHidden);
-
-                    prefs.putInt("countOfLearnedWords", countOfLearnedWords);
-                    prefs.putInt("countOfDifficultWords", countOfDifficultWords);
-                    prefs.putInt("countOfLeftWords", listDictionary.size() - countOfLearnedWords);
-                    prefs.putInt("countOfTotalWords", listDictionary.size());
-
 
                 } else {
                     out.writeUTF("loading");//инструкция для Android
