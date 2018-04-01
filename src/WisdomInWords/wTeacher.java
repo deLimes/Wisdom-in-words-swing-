@@ -3,9 +3,11 @@ package WisdomInWords;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
 import javax.imageio.ImageIO;
 import javax.net.ssl.HttpsURLConnection;
+import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.Border;
@@ -80,6 +82,7 @@ public class wTeacher extends JFrame {
     boolean storedValueHotStartStop;
     boolean movingColumns = false;
     boolean ignoreTableChange = false;
+    boolean playedNextPoint = false;
 
 
     private boolean EnglishTextLayout = false;
@@ -428,14 +431,16 @@ public class wTeacher extends JFrame {
                             table.setValueAt(false, indexOfTheFilteredSelectedRow, 2);
 
                             if((learnedEnTemp && learnedRuTemp)) {
-                                labelNumberOfWordsLeft.setText("left: " + (listDictionary.size() - countOfLearnedWords + 1));
                                 labelNumberOfLearnedWords.setText("learned: " + --countOfLearnedWords);
+                                labelNumberOfWordsLeft.setText("left: " + (listDictionary.size() - countOfLearnedWords));
+                                progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
                                 learnedEnTemp = false;
                             }
                         }
                         if(learnedEnTemp && learnedRuTemp && !(Boolean) v){
-                            labelNumberOfWordsLeft.setText("left: " + (listDictionary.size() - countOfLearnedWords + 1));
                             labelNumberOfLearnedWords.setText("learned: " + --countOfLearnedWords);
+                            labelNumberOfWordsLeft.setText("left: " + (listDictionary.size() - countOfLearnedWords));
+                            progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
                         }
                     } else if (indexOfTheSelectedColumn == 2) {
                         if (englishLeft) {
@@ -451,14 +456,20 @@ public class wTeacher extends JFrame {
                             table.setValueAt(true, indexOfTheFilteredSelectedRow, 0);
 
                             if(!(learnedEnTemp && learnedRuTemp)) {
-                                labelNumberOfWordsLeft.setText("left: " + (listDictionary.size() - countOfLearnedWords - 1));
                                 labelNumberOfLearnedWords.setText("learned: " + ++countOfLearnedWords);
+                                labelNumberOfWordsLeft.setText("left: " + (listDictionary.size() - countOfLearnedWords));
+                                progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
+                                //if (countOfLearnedWords % 1000 == 0 && !playedNextPoint) {
+                                if (countOfLearnedWords % 3 == 0) {
+                                    playNextPoint();
+                                }
                                 learnedEnTemp = false;
                             }
                         }
                         if(learnedEnTemp && learnedRuTemp && !(Boolean) v){
-                            labelNumberOfWordsLeft.setText("left: " + (listDictionary.size() - countOfLearnedWords + 1));
                             labelNumberOfLearnedWords.setText("learned: " + --countOfLearnedWords);
+                            labelNumberOfWordsLeft.setText("left: " + (listDictionary.size() - countOfLearnedWords));
+                            progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
                         }
                     }
 
@@ -2134,6 +2145,46 @@ public class wTeacher extends JFrame {
         if (answersAreHidden) {
             hideAnswers();
         }
+    }
+
+    public void playNextPoint(){
+
+        playedNextPoint = true;
+
+        try {
+            URL soundURL = this.getClass().getResource("/nextPoint.wav"); //Звуковой файл
+
+            //Получаем AudioInputStream
+            //Вот тут могут полететь IOException и UnsupportedAudioFileException
+            AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL);
+
+            //Получаем реализацию интерфейса Clip
+            //Может выкинуть LineUnavailableException
+            Clip clip = AudioSystem.getClip();
+
+            //Загружаем наш звуковой поток в Clip
+            //Может выкинуть IOException и LineUnavailableException
+            clip.open(ais);
+
+            /*
+            //Получаем контроллер громкости
+            FloatControl vc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            //Устанавливаем значение
+            //Оно должно быть в пределах от vc.getMinimum() до vc.getMaximum()
+            vc.setValue(5); //Громче обычного
+            */
+
+            clip.setFramePosition(0); //устанавливаем указатель на старт
+            clip.start(); //Поехали!!!
+
+        } catch (IOException exc) {
+            exc.printStackTrace();
+        } catch (UnsupportedAudioFileException e1) {
+            e1.printStackTrace();
+        } catch (LineUnavailableException e1) {
+            e1.printStackTrace();
+        }
+
     }
 
 
