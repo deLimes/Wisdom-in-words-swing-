@@ -459,8 +459,8 @@ public class wTeacher extends JFrame {
                                 labelNumberOfLearnedWords.setText("learned: " + ++countOfLearnedWords);
                                 labelNumberOfWordsLeft.setText("left: " + (listDictionary.size() - countOfLearnedWords));
                                 progressBar.setValue((int) ((double) countOfLearnedWords / listDictionary.size() * 100));
-                                //if (countOfLearnedWords % 1000 == 0 && !playedNextPoint) {
-                                if (countOfLearnedWords % 3 == 0) {
+                                if (countOfLearnedWords % 1000 == 0 && !playedNextPoint) {
+                                //if (countOfLearnedWords % 3 == 0) {
                                     playNextPoint();
                                 }
                                 learnedEnTemp = false;
