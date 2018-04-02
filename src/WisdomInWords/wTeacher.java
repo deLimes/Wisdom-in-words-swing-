@@ -2292,13 +2292,31 @@ public class wTeacher extends JFrame {
             String comparison = original + "\r\n" + answer;
             setText(comparison);
             //
+            /*
             char falseDoubletLeftCharacter = '⚓';//any unique character
             char falseDoubletRightCharacter = '⚓';//any unique character
             char lastLeftCorrectCharacter = '⚓';//any unique character
             char lastRightCorrectCharacter = '⚓';//any unique character
             char lastRightOriginalCharacter = '⚓';//any unique character
             char lastRightPreviousOriginalCharacter = '✓';
+            */
             //
+            //03
+            char lastLeftCorrectCharacter = '✓';
+            char falseDoubletLeftCharacter = '✓';
+            char lastRightCorrectCharacter = '⚓';
+            char falseDoubletRightCharacter = '⚓';
+
+            char lastRightOriginalCharacter = '⚓';
+            char lastRightPreviousOriginalCharacter = '✓';
+
+            char  lastRightPreviousCharacter = '⚓';
+            char lastRightCharacter = '⚓';
+            char lastDoubletRightCharacter = '⚓';
+
+            int positionFalseDoubletRightCharacter = -1;
+            int positionLastRightCorrectCharacter = -1;
+            //03
 
             for (int i = 0; i < original.length(); i++) {
                 StyleConstants.setForeground(set, Color.BLUE);
@@ -2355,16 +2373,29 @@ public class wTeacher extends JFrame {
                         doc.setCharacterAttributes(pos, 1, set, true);
                         //
                         lastRightCorrectCharacter = answer.charAt(j);
+                        positionLastRightCorrectCharacter = j;
                         //
                         ///////////////
                         falseDoubletRightCharacter = '⚓';
                         //////////////
-                    }else if(j >= 0){
+                    }else if(!charactersEqual && j >= 0){
                         if (falseDoubletRightCharacter == '⚓') {
                             falseDoubletRightCharacter = answer.charAt(j);
+                            positionFalseDoubletRightCharacter = j;
                         }
                     }
                     ///////////////
+                    //03
+                    if(j >= 0){
+                        if (j < answer.length() - 1) {
+                            lastRightPreviousCharacter = answer.charAt(j + 1);
+                        };
+                        lastRightCharacter = answer.charAt(j);;
+                        if(j > 0) {
+                            lastDoubletRightCharacter = answer.charAt(j - 1);
+                        }
+                    }
+                    //03
                 } else if (i < original.length() && answer.length() < original.length() && i >= original.length() - answer.length()) {
                     charactersEqual = original.charAt(i) == answer.charAt(i - (original.length() - answer.length()));
 
@@ -2377,19 +2408,23 @@ public class wTeacher extends JFrame {
                         doc.setCharacterAttributes(pos, 1, set, true);
                         //
                         lastRightCorrectCharacter = answer.charAt(i - (original.length() - answer.length()));
+                        positionLastRightCorrectCharacter =  i + 1 - (original.length() - answer.length());
                         //
                         ///////////////
                         falseDoubletRightCharacter = '⚓';
                         //////////////
-                    }else if(j >= 0){
+                    }else if(!charactersEqual && j >= 0){
                         if (falseDoubletRightCharacter == '⚓') {
                             falseDoubletRightCharacter = answer.charAt(j);
+                            positionFalseDoubletRightCharacter = j;
                         }
                     }
                     ///////////////
                 }
 
-                //
+
+                //03
+                /*
                 if (j >= 0
                         &&lastLeftCorrectCharacter == falseDoubletLeftCharacter
                         && lastLeftCorrectCharacter == lastRightCorrectCharacter
@@ -2400,12 +2435,39 @@ public class wTeacher extends JFrame {
                     StyleConstants.setForeground(set, Color.RED);
                     doc.setCharacterAttributes(i, 1, set, true);
                 }
+                */
+
+                if (j >= 0
+                        && lastRightCorrectCharacter == falseDoubletRightCharacter
+                        && j != positionFalseDoubletRightCharacter
+                        && lastRightCorrectCharacter != '⚓'
+                        ){
+
+                    lastRightCorrectCharacter = '⚓';
+
+                    StyleConstants.setForeground(set, Color.RED);
+                    doc.setCharacterAttributes(i, 1, set, true);
+                }
+
+                if (j >= 0
+                        && lastLeftCorrectCharacter == falseDoubletLeftCharacter
+                        && falseDoubletLeftCharacter == lastRightCharacter
+                        && lastRightCharacter == lastDoubletRightCharacter
+                        && j != positionLastRightCorrectCharacter
+                        && lastRightCorrectCharacter != '⚓'){
+
+                    lastRightCharacter = '⚓';
+                    lastRightCorrectCharacter = '⚓';
+
+                    StyleConstants.setForeground(set, Color.RED);
+                    doc.setCharacterAttributes(i-1, 1, set, true);
+                }
 
                 if (i < original.length() - 1) {
                     lastRightOriginalCharacter = comparison.charAt(i);
                     lastRightPreviousOriginalCharacter = comparison.charAt(i + 1);
                 }
-                //
+                //03
 
 
                 if (i < original.length() && answer.length() >= original.length()) {
@@ -2425,14 +2487,15 @@ public class wTeacher extends JFrame {
                             doc.setCharacterAttributes(i, 1, set, true);
                         }
                     }
-                    //
+                    //03
                     if(lastRightOriginalCharacter == lastRightPreviousOriginalCharacter
-                            && lastRightOriginalCharacter != falseDoubletLeftCharacter){
+                            && lastRightOriginalCharacter != falseDoubletLeftCharacter
+                            && i != positionLastRightCorrectCharacter){
 
                         StyleConstants.setForeground(set, Color.BLUE);
                         doc.setCharacterAttributes(i + 1, 1, set, true);
                     }
-                    //
+                    //03
                 }
                 j--;
             }
