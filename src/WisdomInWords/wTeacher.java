@@ -2187,6 +2187,74 @@ public class wTeacher extends JFrame {
 
     }
 
+    public StateMap[] createStateMap(String line) {
+
+        StateMap[] stateMapOfLine = new StateMap[line.length()];
+
+        for (int i = 0; i < line.length(); i++) {
+            char unitMain = line.charAt(i);
+            int itemsNumberMain = 0;
+            int numberOfItemsMain = 0;
+            StateMap[] states = new StateMap[line.length()];
+
+            for (int j = 0; j < line.length(); j++) {
+                int state;
+                char unit = line.charAt(j);
+                int itemsNumber = 0;
+                int numberOfItems = 0;
+
+                for (int k = 0; k < line.length(); k++) {
+                    if(unit == line.charAt(k)){
+                        numberOfItems++;
+                        if(j == k){
+                            itemsNumber = numberOfItems;
+                        }
+                    }
+                }
+
+                if(unitMain == line.charAt(j)){
+                    numberOfItemsMain++;
+                    if(i == j){
+                        itemsNumberMain = numberOfItemsMain;
+                    }
+                }
+
+                if(i == j){
+                    state = 0;
+                }else if(i < j){
+                    state = -1;
+                }else{
+                    state = 1;
+                }
+
+                states[j] = new StateMap(line.charAt(j), false, state, j, itemsNumber, numberOfItems, new StateMap[0]);;
+            }
+            stateMapOfLine[i] = new StateMap(line.charAt(i), false, 0, i,  itemsNumberMain, numberOfItemsMain, states);
+        }
+
+        return stateMapOfLine;
+    }
+
+    class StateMap {
+
+        Character unit;
+        boolean used;
+        int state;
+        int index;
+        int itemsNumber;
+        int numberOfItems;
+        StateMap[] states;
+
+        public StateMap(Character unit, boolean used, int state, int index, int itemsNumber,int numberOfItems, StateMap[] states) {
+            this.unit = unit;
+            this.used = used;
+            this.state = state;
+            this.index = index;
+            this.itemsNumber = itemsNumber;
+            this.numberOfItems = numberOfItems;
+            this.states = states;
+        }
+    }
 
     class Sender extends Thread {
         Socket socket;
@@ -2289,18 +2357,149 @@ public class wTeacher extends JFrame {
                                                        int column) {
 
             setFont(new Font(adaptee.getFont().getName(), adaptee.getFont().getStyle(), fontSize));
-            String comparison = original + "\r\n" + answer;
+            String comparison = original + "\n" + answer;
             setText(comparison);
-            //
-            /*
+             /*
             char falseDoubletLeftCharacter = '⚓';//any unique character
             char falseDoubletRightCharacter = '⚓';//any unique character
             char lastLeftCorrectCharacter = '⚓';//any unique character
             char lastRightCorrectCharacter = '⚓';//any unique character
             char lastRightOriginalCharacter = '⚓';//any unique character
-            char lastRightPreviousOriginalCharacter = '✓';
+            char lastRightPreviousOrignalCharacter = '✓';
             */
             //
+
+            StateMap[] stateMapOfOriginal = createStateMap(original);
+            StateMap[] stateMapOfAnswer = createStateMap(answer);
+
+            for (int i = 0; i < comparison.length(); i++) {
+                if (i <= original.length()){
+                    StyleConstants.setForeground(set, Color.BLUE);
+                    doc.setCharacterAttributes(i, 1, set, true);
+                }else{
+                    StyleConstants.setForeground(set, Color.RED);
+                    doc.setCharacterAttributes(i, 1, set, true);
+                }
+
+            }
+
+            for (int i = 0; i < comparison.length(); i++) {
+                if (i < original.length()) {
+
+                    for (int j = 0; j < stateMapOfAnswer.length; j++) {
+                        boolean wrongPlace = false;
+                        if (!stateMapOfAnswer[j].used && stateMapOfOriginal[i].unit.equals(stateMapOfAnswer[j].unit)) {
+
+                            for (int k = 0; k < stateMapOfOriginal[i].states.length; k++) {
+                                StateMap elementStateMapOfOriginal = stateMapOfOriginal[i].states[k];
+
+                                for (int l = 0; l < stateMapOfAnswer[j].states.length; l++) {
+                                    StateMap elementStateMapOfAnswer = stateMapOfAnswer[j].states[l];
+
+                                    if (!elementStateMapOfAnswer.used) {
+                                        if (elementStateMapOfOriginal.unit.equals(elementStateMapOfAnswer.unit)
+                                                && elementStateMapOfOriginal.state == elementStateMapOfAnswer.state) {
+
+                                            stateMapOfAnswer[j].states[l].used = true;
+                                            break;
+
+                                        } else if (elementStateMapOfOriginal.unit.equals(elementStateMapOfAnswer.unit)
+                                                && elementStateMapOfOriginal.state != elementStateMapOfAnswer.state) {
+
+                                            if (elementStateMapOfOriginal.itemsNumber < elementStateMapOfOriginal.numberOfItems
+                                                    || elementStateMapOfAnswer.itemsNumber < elementStateMapOfAnswer.numberOfItems
+                                                    ) {
+                                                continue;
+                                            } else {
+                                                wrongPlace = true;
+                                                break;
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+                                if (wrongPlace) {
+                                    break;
+                                }
+                            }
+
+                        } else {
+                            wrongPlace = true;
+                        }
+                        if (!wrongPlace) {
+                            stateMapOfAnswer[j].used = true;
+                            StyleConstants.setForeground(set, Color.GRAY);
+                            doc.setCharacterAttributes(i, 1, set, true);
+
+                            break;
+                        }
+                    }
+
+                }
+            }
+
+            stateMapOfOriginal = createStateMap(original);
+            stateMapOfAnswer = createStateMap(answer);
+
+            int s = 0;
+            for (int i = 0; i < comparison.length(); i++) {
+                if (i > original.length()) {
+
+                    for (int j = 0; j < stateMapOfOriginal.length; j++) {
+                        boolean wrongPlace = false;
+                        if (!stateMapOfOriginal[j].used && stateMapOfAnswer[s].unit.equals(stateMapOfOriginal[j].unit)) {
+
+                            for (int k = 0; k < stateMapOfOriginal[j].states.length; k++) {
+                                StateMap elementStateMapOfOriginal = stateMapOfOriginal[j].states[k];
+
+                                for (int l = 0; l < stateMapOfAnswer[s].states.length; l++) {
+                                    StateMap elementStateMapOfAnswer = stateMapOfAnswer[s].states[l];
+
+                                    if (!elementStateMapOfAnswer.used) {
+                                        if (elementStateMapOfOriginal.unit.equals(elementStateMapOfAnswer.unit)
+                                                && elementStateMapOfOriginal.state == elementStateMapOfAnswer.state) {
+
+                                            stateMapOfAnswer[s].states[l].used = true;
+                                            break;
+
+                                        }else if(elementStateMapOfOriginal.unit.equals(elementStateMapOfAnswer.unit)
+                                                && elementStateMapOfOriginal.state != elementStateMapOfAnswer.state){
+
+                                            if (elementStateMapOfOriginal.itemsNumber < elementStateMapOfOriginal.numberOfItems
+                                                    || elementStateMapOfAnswer.itemsNumber < elementStateMapOfAnswer.numberOfItems
+                                                    ) {
+                                                continue;
+                                            }else{
+                                                wrongPlace = true;
+                                                break;
+                                            }
+                                        }
+
+                                    }
+                                }
+                                if (wrongPlace) {
+                                    break;
+                                }
+                            }
+
+                        } else {
+                            wrongPlace = true;
+                        }
+                        if (!wrongPlace) {
+                            stateMapOfOriginal[j].used = true;
+                            StyleConstants.setForeground(set, new Color(0, 200, 0));
+                            doc.setCharacterAttributes(i, 1, set, true);
+
+                            break;
+                        }
+                    }
+                    s++;
+                }
+            }
+
+            /*
             //03
             char lastLeftCorrectCharacter = '✓';
             char falseDoubletLeftCharacter = '✓';
@@ -2424,18 +2623,18 @@ public class wTeacher extends JFrame {
 
 
                 //03
-                /*
-                if (j >= 0
-                        &&lastLeftCorrectCharacter == falseDoubletLeftCharacter
-                        && lastLeftCorrectCharacter == lastRightCorrectCharacter
-                        && falseDoubletLeftCharacter == falseDoubletRightCharacter){
+                ///*
+//                if (j >= 0
+//                        &&lastLeftCorrectCharacter == falseDoubletLeftCharacter
+//                        && lastLeftCorrectCharacter == lastRightCorrectCharacter
+//                        && falseDoubletLeftCharacter == falseDoubletRightCharacter){
+//
+//                    lastRightCorrectCharacter = '⚓';
+//
+//                    StyleConstants.setForeground(set, Color.RED);
+//                    doc.setCharacterAttributes(i, 1, set, true);
+//                }
 
-                    lastRightCorrectCharacter = '⚓';
-
-                    StyleConstants.setForeground(set, Color.RED);
-                    doc.setCharacterAttributes(i, 1, set, true);
-                }
-                */
 
                 if (j >= 0
                         && lastRightCorrectCharacter == falseDoubletRightCharacter
@@ -2499,6 +2698,7 @@ public class wTeacher extends JFrame {
                 }
                 j--;
             }
+            */
 
             Rectangle rect = table.getCellRect(row, column, true);
             this.setSize(rect.getSize());//для установки ширины компоненты

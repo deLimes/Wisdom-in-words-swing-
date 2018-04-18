@@ -36,8 +36,8 @@
       <file leaf-file-name="wTeacher.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.38858697" vertical-offset="39892" max-vertical-offset="42959">
-              <caret line="2476" column="67" selection-start-line="2476" selection-start-column="67" selection-end-line="2476" selection-end-column="67" />
+            <state vertical-scroll-proportion="2.0461957" vertical-offset="35576" max-vertical-offset="46359">
+              <caret line="2256" column="5" selection-start-line="2256" selection-start-column="5" selection-end-line="2256" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -88,6 +88,7 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -204,7 +205,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -572,12 +572,6 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>2421</line>
-          <properties />
-          <option name="timeStamp" value="76" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
           <line>517</line>
           <properties />
           <option name="timeStamp" value="117" />
@@ -632,13 +626,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>2230</line>
+          <line>2298</line>
           <properties />
           <option name="timeStamp" value="152" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java</url>
-          <line>2236</line>
+          <line>2304</line>
           <properties />
           <option name="timeStamp" value="154" />
         </line-breakpoint>
@@ -1146,8 +1140,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/WisdomInWords/wTeacher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.38858697" vertical-offset="39892" max-vertical-offset="42959">
-          <caret line="2476" column="67" selection-start-line="2476" selection-start-column="67" selection-end-line="2476" selection-end-column="67" />
+        <state vertical-scroll-proportion="2.0461957" vertical-offset="35576" max-vertical-offset="46359">
+          <caret line="2256" column="5" selection-start-line="2256" selection-start-column="5" selection-end-line="2256" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
