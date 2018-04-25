@@ -2481,7 +2481,7 @@ public class wTeacher extends JFrame {
 
                                             if ((elementStateMapOfOriginal.itemsNumber < elementStateMapOfOriginal.numberOfItems
                                                     || elementStateMapOfAnswer.itemsNumber < elementStateMapOfAnswer.numberOfItems)
-                                                    && (l>j && l>i)
+                                                    && l > k//(l>j && l>i)
                                                     ) {
                                                 continue;
                                             } else {
@@ -2564,7 +2564,7 @@ public class wTeacher extends JFrame {
 
                                             if ((elementStateMapOfOriginal.itemsNumber < elementStateMapOfOriginal.numberOfItems
                                                     || elementStateMapOfAnswer.itemsNumber < elementStateMapOfAnswer.numberOfItems)
-                                                    && (l>j && l>s)
+                                                    && l > k//(l>j && l>s)
                                                     ) {
                                                 continue;
                                             }else{
