@@ -2187,125 +2187,60 @@ public class wTeacher extends JFrame {
 
     }
 
-    public StateMap[] createStateMap(String line) {
+    public Character[] createArrayOfCharactersByLine(String line){
 
-        StateMap[] stateMapOfLine = new StateMap[line.length()];
-
+        Character[] arrayOfCharacters = new Character[line.length()];
         for (int i = 0; i < line.length(); i++) {
-            char unitMain = line.charAt(i);
-            int itemsNumberMain = 0;
-            int numberOfItemsMain = 0;
-            StateMap[] statesMain = new StateMap[line.length()];
-
-            for (int j = 0; j < line.length(); j++) {
-                int state;
-                char unit = line.charAt(j);
-                int itemsNumber = 0;
-                int numberOfItems = 0;
-
-                for (int k = 0; k < line.length(); k++) {
-                    if(unit == line.charAt(k)){
-                        numberOfItems++;
-                        if(j == k){
-                            itemsNumber = numberOfItems;
-                        }
-                    }
-                }
-
-                if(unitMain == line.charAt(j)){
-                    numberOfItemsMain++;
-                    if(i == j){
-                        itemsNumberMain = numberOfItemsMain;
-                    }
-                }
-
-                if(i == j){
-                    state = 0;
-                }else if(i < j){
-                    state = 1;
-                }else{
-                    state = -1;
-                }
-
-                if(numberOfItems > 1 && i != j ) {
-                    statesMain[j] = new StateMap('⚓', false, state, j, itemsNumber, numberOfItems, new StateMap[0]);
-                }else {
-                    statesMain[j] = new StateMap(line.charAt(j), false, state, j, itemsNumber, numberOfItems, new StateMap[0]);
-                }
-            }
-            stateMapOfLine[i] = new StateMap(line.charAt(i), false, 0, i,  itemsNumberMain, numberOfItemsMain, statesMain);
+            arrayOfCharacters[i] = line.charAt(i);
         }
 
-        return stateMapOfLine;
+        return arrayOfCharacters;
     }
-    /*
-    public StateMap[] createStateMap(String line) {
 
-        StateMap[] stateMapOfLine = new StateMap[line.length()];
+    public StateMap[] createStateMap(String original, String answer) {
 
-        for (int i = 0; i < line.length(); i++) {
-            char unitMain = line.charAt(i);
-            int itemsNumberMain = 0;
-            int numberOfItemsMain = 0;
-            StateMap[] states = new StateMap[line.length()];
+        Character[] x = createArrayOfCharactersByLine(original);
+        Character[] y = createArrayOfCharactersByLine(answer);
 
-            for (int j = 0; j < line.length(); j++) {
-                int state;
-                char unit = line.charAt(j);
-                int itemsNumber = 0;
-                int numberOfItems = 0;
-
-                for (int k = 0; k < line.length(); k++) {
-                    if(unit == line.charAt(k)){
-                        numberOfItems++;
-                        if(j == k){
-                            itemsNumber = numberOfItems;
-                        }
-                    }
+        int m = x.length;
+        int n = y.length;
+        int[][] len = new int[m + 1][n + 1];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (x[i] == y[j]) {
+                    len[i + 1][j + 1] = len[i][j] + 1;
+                } else {
+                    len[i + 1][j + 1] = Math.max(len[i + 1][j], len[i][j + 1]);
                 }
-
-                if(unitMain == line.charAt(j)){
-                    numberOfItemsMain++;
-                    if(i == j){
-                        itemsNumberMain = numberOfItemsMain;
-                    }
-                }
-
-                if(i == j){
-                    state = 0;
-                }else if(i < j){
-                    state = -1;
-                }else{
-                    state = 1;
-                }
-
-                states[j] = new StateMap(line.charAt(j), false, state, j, itemsNumber, numberOfItems, new StateMap[0]);;
             }
-            stateMapOfLine[i] = new StateMap(line.charAt(i), false, 0, i,  itemsNumberMain, numberOfItemsMain, states);
+        }
+        int cnt = len[m][n];
+        StateMap[] res = new StateMap[cnt];
+        for (int i = m - 1, j = n - 1; i >= 0 && j >= 0;) {
+            if (x[i] == y[j]) {
+                res[--cnt] = new StateMap(x[i], i, j);
+                --i;
+                --j;
+            } else if (len[i + 1][j] > len[i][j + 1]) {
+                --j;
+            } else {
+                --i;
+            }
         }
 
-        return stateMapOfLine;
+        return res;
     }
-    */
 
     class StateMap {
 
         Character unit;
-        boolean used;
-        int state;
-        int index;
-        int itemsNumber;
-        int numberOfItems;
-        StateMap[] states;
+        int indexX;
+        int indexY;
 
-        public StateMap(Character unit, boolean used, int state, int index, int itemsNumber,int numberOfItems, StateMap[] states) {
+        public StateMap(Character unit, int indexX, int indexY) {
             this.unit = unit;
-            this.used = used;
-            this.state = state;
-            this.index = index;
-            this.itemsNumber = itemsNumber;
-            this.numberOfItems = numberOfItems;
-            this.states = states;
+            this.indexX = indexX;
+            this.indexY = indexY;
         }
     }
 
@@ -2412,18 +2347,6 @@ public class wTeacher extends JFrame {
             setFont(new Font(adaptee.getFont().getName(), adaptee.getFont().getStyle(), fontSize));
             String comparison = original + "\n" + answer;
             setText(comparison);
-             /*
-            char falseDoubletLeftCharacter = '⚓';//any unique character
-            char falseDoubletRightCharacter = '⚓';//any unique character
-            char lastLeftCorrectCharacter = '⚓';//any unique character
-            char lastRightCorrectCharacter = '⚓';//any unique character
-            char lastRightOriginalCharacter = '⚓';//any unique character
-            char lastRightPreviousOrignalCharacter = '✓';
-            */
-            //
-
-            StateMap[] stateMapOfOriginal = createStateMap(original);
-            StateMap[] stateMapOfAnswer = createStateMap(answer);
 
             for (int i = 0; i < comparison.length(); i++) {
                 if (i <= original.length()){
@@ -2436,366 +2359,30 @@ public class wTeacher extends JFrame {
 
             }
 
-            for (int i = 0; i < comparison.length(); i++) {
-                if (i < original.length()) {
-
-                    for (int j = 0; j < stateMapOfAnswer.length; j++) {
-                        boolean wrongPlace = false;
-                        if (!stateMapOfAnswer[j].used && stateMapOfOriginal[i].unit.equals(stateMapOfAnswer[j].unit)) {
-
-                            for (int k = 0; k < stateMapOfOriginal[i].states.length; k++) {
-                                StateMap elementStateMapOfOriginal = stateMapOfOriginal[i].states[k];
-
-                                for (int l = 0; l < stateMapOfAnswer[j].states.length; l++) {
-                                    StateMap elementStateMapOfAnswer = stateMapOfAnswer[j].states[l];
-
-                                    /*
-                                    if (!elementStateMapOfAnswer.used) {
-
-                                        if ((elementStateMapOfOriginal.unit.equals(elementStateMapOfAnswer.unit)
-                                                && elementStateMapOfOriginal.state == elementStateMapOfAnswer.state)
-                                                ) {
-
-                                            stateMapOfAnswer[j].states[l].used = true;
-                                            break;
-
-                                        } else if (elementStateMapOfOriginal.unit.equals(elementStateMapOfAnswer.unit)
-                                                && elementStateMapOfOriginal.state != elementStateMapOfAnswer.state) {
-
-                                            wrongPlace = true;
-                                            break;
-                                        }
-
-                                    }
-                                    */
-
-                                    if (!elementStateMapOfAnswer.used) {
-                                        if (elementStateMapOfOriginal.unit.equals(elementStateMapOfAnswer.unit)
-                                                && elementStateMapOfOriginal.state == elementStateMapOfAnswer.state) {
-
-                                            stateMapOfAnswer[j].states[l].used = true;
-                                            break;
-
-                                        } else if (elementStateMapOfOriginal.unit.equals(elementStateMapOfAnswer.unit)
-                                                && elementStateMapOfOriginal.state != elementStateMapOfAnswer.state) {
-
-                                            if ((elementStateMapOfOriginal.itemsNumber < elementStateMapOfOriginal.numberOfItems
-                                                    || elementStateMapOfAnswer.itemsNumber < elementStateMapOfAnswer.numberOfItems)
-                                                    && l > k//(l>j && l>i)
-                                                    ) {
-                                                continue;
-                                            } else {
-                                                wrongPlace = true;
-                                                break;
-                                            }
-
-                                        }
-
-                                    }
-
-
-                                }
-                                if (wrongPlace) {
-                                    break;
-                                }
-                            }
-
-                        } else {
-                            wrongPlace = true;
-                        }
-                        if (!wrongPlace) {
-                            stateMapOfAnswer[j].used = true;
-                            StyleConstants.setForeground(set, Color.GRAY);
-                            doc.setCharacterAttributes(i, 1, set, true);
-
-                            break;
-                        }
-                    }
-
-                }
-            }
-
-            stateMapOfOriginal = createStateMap(original);
-            stateMapOfAnswer = createStateMap(answer);
+            StateMap[] stateMap = createStateMap(original, answer);
 
             int s = 0;
             for (int i = 0; i < comparison.length(); i++) {
-                if (i > original.length()) {
-
-                    for (int j = 0; j < stateMapOfOriginal.length; j++) {
-                        boolean wrongPlace = false;
-                        if (!stateMapOfOriginal[j].used && stateMapOfAnswer[s].unit.equals(stateMapOfOriginal[j].unit)) {
-
-                            for (int k = 0; k < stateMapOfOriginal[j].states.length; k++) {
-                                StateMap elementStateMapOfOriginal = stateMapOfOriginal[j].states[k];
-
-                                for (int l = 0; l < stateMapOfAnswer[s].states.length; l++) {
-                                    StateMap elementStateMapOfAnswer = stateMapOfAnswer[s].states[l];
-
-                                    /*
-                                    if (!elementStateMapOfAnswer.used) {
-
-                                        if ((elementStateMapOfOriginal.unit.equals(elementStateMapOfAnswer.unit)
-                                                && elementStateMapOfOriginal.state == elementStateMapOfAnswer.state)
-                                                ) {
-
-                                            elementStateMapOfAnswer.used = true;
-                                            break;
-
-                                        } else if (elementStateMapOfOriginal.unit.equals(elementStateMapOfAnswer.unit)
-                                                && elementStateMapOfOriginal.state != elementStateMapOfAnswer.state) {
-
-                                            wrongPlace = true;
-                                            break;
-                                        }
-
-                                    }
-                                    */
-
-                                    if (!elementStateMapOfAnswer.used) {
-                                        if (elementStateMapOfOriginal.unit.equals(elementStateMapOfAnswer.unit)
-                                                && elementStateMapOfOriginal.state == elementStateMapOfAnswer.state) {
-
-                                            stateMapOfAnswer[s].states[l].used = true;
-                                            break;
-
-                                        }else if(elementStateMapOfOriginal.unit.equals(elementStateMapOfAnswer.unit)
-                                                && elementStateMapOfOriginal.state != elementStateMapOfAnswer.state){
-
-                                            if ((elementStateMapOfOriginal.itemsNumber < elementStateMapOfOriginal.numberOfItems
-                                                    || elementStateMapOfAnswer.itemsNumber < elementStateMapOfAnswer.numberOfItems)
-                                                    && l > k//(l>j && l>s)
-                                                    ) {
-                                                continue;
-                                            }else{
-                                                wrongPlace = true;
-                                                break;
-                                            }
-                                        }
-
-                                    }
-
-                                }
-                                if (wrongPlace) {
-                                    break;
-                                }
-                            }
-
-                        } else {
-                            wrongPlace = true;
+                if(i <= original.length()){
+                    for (int j = 0; j < stateMap.length; j++) {
+                        if(stateMap[j].unit.equals(comparison.charAt(i)) && stateMap[j].indexX == i){
+                            StyleConstants.setForeground(set, Color.GRAY);
+                            doc.setCharacterAttributes(i, 1, set, true);
+                            break;
                         }
-                        if (!wrongPlace) {
-                            stateMapOfOriginal[j].used = true;
+                    }
+                }else{
+                    for (int j = 0; j < stateMap.length; j++) {
+                        if(stateMap[j].unit.equals(comparison.charAt(i)) && stateMap[j].indexY == s){
                             StyleConstants.setForeground(set, new Color(0, 200, 0));
                             doc.setCharacterAttributes(i, 1, set, true);
-
                             break;
                         }
                     }
                     s++;
                 }
+
             }
-
-            /*
-            //03
-            char lastLeftCorrectCharacter = '✓';
-            char falseDoubletLeftCharacter = '✓';
-            char lastRightCorrectCharacter = '⚓';
-            char falseDoubletRightCharacter = '⚓';
-
-            char lastRightOriginalCharacter = '⚓';
-            char lastRightPreviousOriginalCharacter = '✓';
-
-            char  lastRightPreviousCharacter = '⚓';
-            char lastRightCharacter = '⚓';
-            char lastDoubletRightCharacter = '⚓';
-
-            int positionFalseDoubletRightCharacter = -1;
-            int positionLastRightCorrectCharacter = -1;
-            //03
-
-            for (int i = 0; i < original.length(); i++) {
-                StyleConstants.setForeground(set, Color.BLUE);
-                doc.setCharacterAttributes(i, 1, set, true);
-            }
-
-            int j = 0;
-            for (int i = original.length() + 1; i < getStyledDocument().getLength(); i++) {
-
-                if(j < original.length()) {
-                    StyleConstants.setForeground(set, Color.GRAY);
-                    doc.setCharacterAttributes(j, 1, set, true);
-                }
-
-                if (j >= original.length() || original.charAt(j) != answer.charAt(j)) {
-                    StyleConstants.setForeground(set, Color.RED);
-                    doc.setCharacterAttributes(i, 1, set, true);
-                    //
-                    if (falseDoubletLeftCharacter == '⚓') {
-                        falseDoubletLeftCharacter = answer.charAt(j);
-                    }
-                    //
-
-                    if (j <= original.length()) {
-                        StyleConstants.setForeground(set, Color.BLUE);
-                        doc.setCharacterAttributes(j, 1, set, true);
-                    }
-
-                } else {
-                    StyleConstants.setForeground(set, new Color(0, 200, 0));
-                    doc.setCharacterAttributes(i, 1, set, true);
-                    //
-                    falseDoubletLeftCharacter = '⚓';
-                    lastLeftCorrectCharacter = answer.charAt(j);
-                    //
-                }
-                j++;
-            }
-
-            j = answer.length() - 1;
-            for (int i = getStyledDocument().getLength(); i >= 0; i--) {
-
-                boolean charactersEqual;
-
-                if (j >= answer.length() - original.length() && answer.length() >= original.length()) {
-                    charactersEqual = original.charAt(j - (answer.length() - original.length())) == answer.charAt(j);
-
-                    int pos = original.length() + 1 + j;
-                    Element el = doc.getCharacterElement(pos);
-                    AttributeSet attr = el.getAttributes();
-                    Color color = StyleConstants.getForeground(attr);
-                    if (color.equals(Color.RED) && charactersEqual) {
-                        StyleConstants.setForeground(set, new Color(0, 200, 0));
-                        doc.setCharacterAttributes(pos, 1, set, true);
-                        //
-                        lastRightCorrectCharacter = answer.charAt(j);
-                        positionLastRightCorrectCharacter = j;
-                        //
-                        ///////////////
-                        falseDoubletRightCharacter = '⚓';
-                        //////////////
-                    }else if(!charactersEqual && j >= 0){
-                        if (falseDoubletRightCharacter == '⚓') {
-                            falseDoubletRightCharacter = answer.charAt(j);
-                            positionFalseDoubletRightCharacter = j;
-                        }
-                    }
-                    ///////////////
-                    //03
-                    if(j >= 0){
-                        if (j < answer.length() - 1) {
-                            lastRightPreviousCharacter = answer.charAt(j + 1);
-                        };
-                        lastRightCharacter = answer.charAt(j);;
-                        if(j > 0) {
-                            lastDoubletRightCharacter = answer.charAt(j - 1);
-                        }
-                    }
-                    //03
-                } else if (i < original.length() && answer.length() < original.length() && i >= original.length() - answer.length()) {
-                    charactersEqual = original.charAt(i) == answer.charAt(i - (original.length() - answer.length()));
-
-                    int pos = original.length() + 1 + (i - (original.length() - answer.length()));
-                    Element el = doc.getCharacterElement(pos);
-                    AttributeSet attr = el.getAttributes();
-                    Color color = StyleConstants.getForeground(attr);
-                    if (color.equals(Color.RED) && charactersEqual) {
-                        StyleConstants.setForeground(set, new Color(0, 200, 0));
-                        doc.setCharacterAttributes(pos, 1, set, true);
-                        //
-                        lastRightCorrectCharacter = answer.charAt(i - (original.length() - answer.length()));
-                        positionLastRightCorrectCharacter =  i + 1 - (original.length() - answer.length());
-                        //
-                        ///////////////
-                        falseDoubletRightCharacter = '⚓';
-                        //////////////
-                    }else if(!charactersEqual && j >= 0){
-                        if (falseDoubletRightCharacter == '⚓') {
-                            falseDoubletRightCharacter = answer.charAt(j);
-                            positionFalseDoubletRightCharacter = j;
-                        }
-                    }
-                    ///////////////
-                }
-
-
-                //03
-                ///*
-//                if (j >= 0
-//                        &&lastLeftCorrectCharacter == falseDoubletLeftCharacter
-//                        && lastLeftCorrectCharacter == lastRightCorrectCharacter
-//                        && falseDoubletLeftCharacter == falseDoubletRightCharacter){
-//
-//                    lastRightCorrectCharacter = '⚓';
-//
-//                    StyleConstants.setForeground(set, Color.RED);
-//                    doc.setCharacterAttributes(i, 1, set, true);
-//                }
-
-
-                if (j >= 0
-                        && lastRightCorrectCharacter == falseDoubletRightCharacter
-                        && j != positionFalseDoubletRightCharacter
-                        && lastRightCorrectCharacter != '⚓'
-                        ){
-
-                    lastRightCorrectCharacter = '⚓';
-
-                    StyleConstants.setForeground(set, Color.RED);
-                    doc.setCharacterAttributes(i, 1, set, true);
-                }
-
-                if (j >= 0
-                        && lastLeftCorrectCharacter == falseDoubletLeftCharacter
-                        && falseDoubletLeftCharacter == lastRightCharacter
-                        && lastRightCharacter == lastDoubletRightCharacter
-                        && j != positionLastRightCorrectCharacter
-                        && lastRightCorrectCharacter != '⚓'){
-
-                    lastRightCharacter = '⚓';
-                    lastRightCorrectCharacter = '⚓';
-
-                    StyleConstants.setForeground(set, Color.RED);
-                    doc.setCharacterAttributes(i-1, 1, set, true);
-                }
-
-                if (i < original.length() - 1) {
-                    lastRightOriginalCharacter = comparison.charAt(i);
-                    lastRightPreviousOriginalCharacter = comparison.charAt(i + 1);
-                }
-                //03
-
-
-                if (i < original.length() && answer.length() >= original.length()) {
-                    charactersEqual = original.charAt(i) == answer.charAt(i + answer.length() - original.length());
-
-                    if (charactersEqual) {
-                        StyleConstants.setForeground(set, Color.GRAY);
-                        doc.setCharacterAttributes(i, 1, set, true);
-                    }
-                } else if (i < original.length() && answer.length() < original.length()) {//&& i >= original.length() - answer.length()) {
-                    if (i >= original.length() - answer.length()) {
-                        charactersEqual = original.charAt(i) == answer.charAt(i - (original.length() - answer.length()));
-
-                        if (charactersEqual) {
-
-                            StyleConstants.setForeground(set, Color.GRAY);
-                            doc.setCharacterAttributes(i, 1, set, true);
-                        }
-                    }
-                    //03
-                    if(lastRightOriginalCharacter == lastRightPreviousOriginalCharacter
-                            && lastRightOriginalCharacter != falseDoubletLeftCharacter
-                            && i != positionLastRightCorrectCharacter){
-
-                        StyleConstants.setForeground(set, Color.BLUE);
-                        doc.setCharacterAttributes(i + 1, 1, set, true);
-                    }
-                    //03
-                }
-                j--;
-            }
-            */
 
             Rectangle rect = table.getCellRect(row, column, true);
             this.setSize(rect.getSize());//для установки ширины компоненты
